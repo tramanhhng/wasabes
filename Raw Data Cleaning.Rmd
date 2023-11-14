@@ -1,5 +1,5 @@
 ---
-title: "Exploring Indoor Positioning Data"
+title: "Indoor Positioning Raw Data Cleaning"
 author: "STAT4/510 Wasabees Group"
 date: "2023-11-09"
 output: html_document
