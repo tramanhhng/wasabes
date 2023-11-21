@@ -7,18 +7,67 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
 ```
 
 ```{r}
 
-#open dataset
-raw_data = readLines("Data/offline.final.trace.txt")
-head(raw_data) 
-#the data is separated by semi-colons
+#Read the offline data txt file, with each row in the txt file becoming a text string
+raw_offline = readLines("Data/offline.final.trace.txt")
+str(raw_offline) 
 
 ```
+
+
+```{r clean_#_rows}
+
+#The txt file contains multiple rows starting with # (for example, rows 1, 2, 3) which does not share the same structure as other rows. The code below gets rid of these rows.
+
+clean_offline <- raw_offline[substr(raw_offline,start=1, stop=1) != "#"]
+str(clean_offline)
+
+#After this code, clean_offline has 146,080 rows, less than the original 151,392 rows
+
+
+```
+
+
+```{r split_line}
+#In clean_offline, each row now has the same structure:
+#Semicolons separate between variables
+#Equal signs separate variable names and values
+#For the signal readings, readings of the same access point are separated by commas
+
+#The code below took all the separation out of one line (line 1)
+line = strsplit(clean_offline[1], "[; , =]") [[1]]
+line
+
+#The code below takes the time, id, pos, and degree readings out of "line" and arrange them in a matrix
+line[c(2,4,6,7,8,10)] %>% 
+  matrix(ncol=6,byrow=TRUE) %>% view()
+
+#The code below takes the mac, signal, frequency, and device type reading out of "line" and arrange them in a matrix
+line[-(1:10)] %>%
+  matrix(ncol=4, byrow=TRUE) %>% view()
+
+#After this, we can combine the two matrices to create one row of data for our ideal data frame. 
+
+#The code below attempts to put all the above operations in this code chunk in one function
+clean_function = function(x) {
+  line = strsplit(x, "[; , =]") [[1]]
+  a = line[-(1:10)] %>% matrix(ncol=4, byrow=TRUE)  
+  b = line[c(2,4,6,7,8,10)] %>% matrix(ncol=6, nrow=nrow(a), byrow=TRUE) 
+  cbind(b,a)
+}
+
+#Test clean_function with row 1 in clean_offline
+lapply(clean_offline[1], clean_function) [[1]] %>% view()
+
+```
+
 ```{r}
-
-#separate semicolons
-tester = strsplit(txt[9], ";")[[1]]
+#This code chunk will use clean_function for all rows in clean_offline and rbind them together
 ```
+
+
