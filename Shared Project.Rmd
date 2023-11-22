@@ -1,0 +1,15 @@
+---
+title: "Project"
+author: "STAT4/510 Wasabees Group"
+date: "2023-12-05"
+output: rmdformats::downcute
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#Read the offline data txt file
+
+```
