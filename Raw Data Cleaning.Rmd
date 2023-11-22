@@ -5,6 +5,11 @@ date: "2023-11-09"
 output: html_document
 ---
 
+1. Describe your data
+2. Describe the basic variable component of your data
+3. Report the various findings you have established so far, with interprtation (include discussion on what you find and add how useful it is to your project objective)
+4. Discuss any challenges you encountered, and ways by which you handled these.
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
