@@ -11,5 +11,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 #Read the offline data txt file
-
+# Specify the path to the file
+offline_txtfile <- "~/offline.final.trace.txt"  # Replace with the actual path in your directory
+# Read the file using readLines
+offline <- readLines(offline_txtfile)
+# with each row in the txt file becoming a text string
+str(offline)
 ```
