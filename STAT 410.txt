@@ -1,0 +1,4 @@
+1) Create a atory about how the data was collected.
+2) If we have 19 variables, we need to describe each of them, what do they mean, what do they represent.
+3) Report the various findings you have established so far, with interpretation (include discussion on what you find and add how useful it is) -> the objective is to predict, how does those variables help with the project
+4) Never produce a summary without describing the data, we need to write a paragraph on the diagrams, tables, etc
