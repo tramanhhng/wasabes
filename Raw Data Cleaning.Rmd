@@ -2,7 +2,7 @@
 title: "Indoor Positioning Raw Data Cleaning"
 author: "STAT4/510 Wasabees Group"
 date: "2023-11-30"
-output: html_document
+output: pdf_document
 ---
 
 1. Describe your data
@@ -15,6 +15,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 ```
+
+1. Introduction
+
+Indoor position systems (IPS) development is an active area of research that can be used in numerous settings. Part of efforts to develop, calibration and model these systems are achieved throught the use of WIFI signals. The following report, describes and characterizes a large dataset compiled in a 15 by 36 meter area that contains six (wifi routers) access points.  
+
 
 ```{r}
 
