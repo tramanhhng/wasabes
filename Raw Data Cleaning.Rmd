@@ -85,7 +85,7 @@ lapply(clean_offline[1], clean_function) [[1]] %>% view()
 
 ```
 
-# Plot the orientation of the measurement device
 ```{r}
-plot(ecdf(offline$orientation))
+# Plot the orientation of the measurement device
+plot(ecdf(clean_offline$orientation))
 ```
