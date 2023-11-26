@@ -24,7 +24,7 @@ Indoor position systems (IPS) development is an active area of research that can
 ```{r}
 
 #Read the offline data txt file, with each row in the txt file becoming a text string
-raw_offline = readLines("Data/offline.final.trace.txt")
+raw_offline = readLines("Data/offline.final.trace.txt") # Replace with the actual path in your directory
 str(raw_offline) 
 
 ```
@@ -81,3 +81,5 @@ lapply(clean_offline[1], clean_function) [[1]] %>% view()
 ```
 
 
+# Plot the orientation of the measurement device
+plot(ecdf(offline$orientation))
