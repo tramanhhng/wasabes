@@ -1,5 +1,5 @@
 ---
-title: "Indoor Positioning Raw Data Cleaning"
+title: "Indoor Positioning Data Exploration"
 author: "STAT4/510 Wasabees Group"
 date: "2023-11-30"
 output: pdf_document
@@ -18,17 +18,23 @@ library(tidyverse)
 
 1. Introduction
 
-Indoor position systems (IPS) development is an active area of research that can be used in numerous settings. Part of efforts to develop, calibration and model these systems are achieved throught the use of WIFI signals. The following report, describes and characterizes a large dataset compiled in a 15 by 36 meter area that contains six (wifi routers) access points.  
+Indoor position systems (IPS) development is an active area of research that can be used in numerous settings. Part of efforts to develop, calibration and model these systems are achieved throught the use of WIFI signals. The following report, describes and characterizes a large data set compiled in a 15 by 36 meter area that contains six (wifi routers) access points, signal strength, various locations and orientation of the devices.
+The data is subdivided in two sub-sets, one denominated "offline data", which corresponds to various testing devices connected to the network at different locations and orientations, and an "online data", where 60 locations and orientations of the devices were selected at random.
+
+The offline data was collected designing a 1 meter resolution grid, resulting in 166 locations. In each of these locations, the device was oriented starting at 0 degrees inclination and at 45 degrees increments, and the strength signal measured. Furthermore, each combination of location/orientation was sampled 110 times. This grid sampling is intended to be used to calibrate a indoor positioning model. On the other hand, the online data was designed to simulate real-world data, in which locations are not bounded by the 1 meter grid used in the offline data, and were selected at random. This randomization included the orientation of the device and therefore, the online data consists of 60 randomly selected location/orientation combinations sampled 110 times. 
+
+More details of the floorplan, and location of online and offline data can be seen in Figure 1.
+
+![Figure 1: Flooplan location. Access points are squares. Grey dots are offline data locations and black dots are online data locations.](data/floorplan.jpg)
 
 
 ```{r}
 
 #Read the offline data txt file, with each row in the txt file becoming a text string
 raw_offline = readLines("Data/offline.final.trace.txt")
-str(raw_offline) 
+head(raw_offline) 
 
 ```
-
 
 ```{r clean_#_rows}
 
