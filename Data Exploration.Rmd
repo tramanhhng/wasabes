@@ -91,12 +91,32 @@ lapply(clean_offline[1], clean_function) [[1]] %>% view()
 #This code chunk will use clean_function for all rows in clean_offline and rbind them together
 ```
 
-# Raw data cleaning
-```{r}
+2. Raw data cleaning
+Name the variables.
 
+```{r}
+names(clean_offline) = c("time", "scanMac", "posX", "posY", "posZ", "orientation", "mac", "signal", "channel", "type")
+```
+We need to convert some variables to numeric.
+
+```{r}
+numeric_var = c("time","posX","posY","posZ","orientation","signal")
+clean_offline[numeric_var] = lapply(clean_offline[numeric_var],as.numeric)
 ```
 
 ```{r}
+OffLine = clean_offline[clean_offline$type == "3", ]
+OffLine = clean_offline[, "type" != names(clean_offline)]
+```
+
+```{r}
+offline$rawtime = OffLine$time
+offline$time = OffLine$time/1000
+class(offline$time) = c("POSIXt","POSIXct")
+```
+
+3. Data exploration
+```{r}
 # Plot the orientation of the measurement device
-plot(ecdf(clean_offline$orientation))
+plot(ecdf(OffLine$orientation))
 ```
