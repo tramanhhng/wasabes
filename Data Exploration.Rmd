@@ -92,6 +92,11 @@ clean_offline = clean_offline[-3]
 #We have rows! =)
 length(clean_offline)
 
+#Test clean_function with row 1 in clean_offline
+line_1 <- lapply(clean_offline[1], clean_function) [[1]]
+line_1
+
+```
 
 clean_function = function(raw_data){
   #check first element of the 2d array created -> row of observation
