@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-1. Introduction
+# Introduction
 
 Indoor position systems (IPS) development is an active area of research that can be used in numerous settings. Part of efforts to develop, calibration and model these systems are achieved throught the use of WIFI signals. The following report, describes and characterizes a large data set compiled in a 15 by 36 meter area that contains six (wifi routers) access points, signal strength, various locations and orientation of the devices.
 The data is subdivided in two sub-sets, one denominated "offline data", which corresponds to various testing devices connected to the network at different locations and orientations, and an "online data", where 60 locations and orientations of the devices were selected at random.
@@ -26,72 +26,104 @@ The offline data was collected designing a 1 meter resolution grid, resulting in
 More details of the floorplan, and location of online and offline data can be seen in Figure 1.
 
 ![Figure 1: Flooplan location. Access points are squares. Grey dots are offline data locations and black dots are online data locations.](data/floorplan.jpg)
+Noting that the online and offline data sets share the same structure, in this document, we explore the offline data set with the expectation to apply the same method for the online data set.
 
 
-```{r}
+# Transferring text data into a data frame
+
+Our offline data set was handed to us as a .txt file with the following structure:
+
+```{r read_offline_data}
 
 #Read the offline data txt file, with each row in the txt file becoming a text string
-<<<<<<< HEAD:Data Exploration.Rmd
-raw_offline = readLines("Data/offline.final.trace.txt")
-head(raw_offline) 
-=======
-raw_offline = readLines("Data/offline.final.trace.txt") # Replace with the actual path in your directory
-str(raw_offline) 
->>>>>>> 0f1835625a5c5468615e2b0bd34b9744d3539e2e:Raw Data Cleaning.Rmd
 
+raw_offline = readLines("Data/offline.final.trace.txt")
+str(raw_offline) 
+head(raw_offline)
 ```
+
+The raw data contains multiple rows starting with # (for example: rows 1, 2, 3) that provide generic information. The actual data are contained in other rows with variables separated by semicolons (for example, row 4). Our next step was to clean all rows that start with the character #. `r length(raw_offline) - length(clean_offline)` rows were removed, resulting in `r length(clean_offline)` rows in our clean data set.
 
 ```{r clean_#_rows}
 
-#The txt file contains multiple rows starting with # (for example, rows 1, 2, 3) which does not share the same structure as other rows. The code below gets rid of these rows.
+# The code below removes all rows that start with #
 
 clean_offline <- raw_offline[substr(raw_offline,start=1, stop=1) != "#"]
-str(clean_offline)
-
-#After this code, clean_offline has 146,080 rows, less than the original 151,392 rows
-
+head(clean_offline)
 
 ```
 
+The clean data set contains the following variables:
+*`time`: time in miliseconds
+*`scanMac`: IP address of the scanning device
+*`pos`: the 3-D coordination of the scanning device
+*`orientation`: the scanning device's orientation
+*`mac`: the IP address of the access points
+*`signal`: signal strength in dBm
+*`channel`: the channel frequency
+*`type`: type of device (access point = 3, device in adhoc mode =1)  
 
-```{r split_line}
-#In clean_offline, each row now has the same structure:
-#Semicolons separate between variables
-#Equal signs separate variable names and values
-#For the signal readings, readings of the same access point are separated by commas
+Each row in the clean data set contains all of those variables in the following structure:   
+*For the variables `time`, `id`, `pos`, `orientation`: semicolons separate between variables, equal signs separate variable names and values
+*The other variables follow this structure: `mac` = `signal`, `channel`, `type`
 
-#The code below took all the separation out of one line (line 1)
+Understanding this data structure, our next task is to separate these variables and put them in a data frame that will allow analysis later. We first tried to it with one line - line [1].
+
+```{r split_one_line}
+#The code below took all the separation out of one line. We take line 1 as an example and our separators are ; , and =
 line = strsplit(clean_offline[1], "[; , =]") [[1]]
 line
 
 #The code below takes the time, id, pos, and degree readings out of "line" and arrange them in a matrix
-line[c(2,4,6,7,8,10)] %>% 
-  matrix(ncol=6,byrow=TRUE) %>% view()
+a = line[c(2,4,6,7,8,10)] %>% 
+  matrix(ncol=6,byrow=TRUE)
+a
 
-#The code below takes the mac, signal, frequency, and device type reading out of "line" and arrange them in a matrix
-line[-(1:10)] %>%
-  matrix(ncol=4, byrow=TRUE) %>% view()
+#The code below takes the mac, signal, channel, and device type reading out of "line" and arrange them in a matrix
+b= line[-(1:10)] %>%
+  matrix(ncol=4, byrow=TRUE)
+b
 
-#After this, we can combine the two matrices to create one row of data for our ideal data frame. 
+#After this, we can combine the two matrices into a data frame. Our unit of analysis is signal strength, which mean each signal strength value needs to be one single observation. So to combine the data, we need to duplicate `a` by the number of rows in `b`.
+
+a = line[c(2,4,6,7,8,10)] %>% 
+  matrix(ncol=6,nrow=nrow(b), byrow=TRUE)
+
+cbind(a,b) %>% view()
+```
+
+Now that we have successfully separated the variables in line [1], we combined all operations above into a `clean_function` that can be applied to all rows.
+```{r split_each_line}
 
 #The code below attempts to put all the above operations in this code chunk in one function
 clean_function = function(x) {
   line = strsplit(x, "[; , =]") [[1]]
-  a = line[-(1:10)] %>% matrix(ncol=4, byrow=TRUE)  
-  b = line[c(2,4,6,7,8,10)] %>% matrix(ncol=6, nrow=nrow(a), byrow=TRUE) 
-  cbind(b,a)
+  b = line[-(1:10)] %>% matrix(ncol=4, byrow=TRUE)  
+  a = line[c(2,4,6,7,8,10)] %>% matrix(ncol=6, nrow=nrow(b), byrow=TRUE) 
+  cbind(a,b)
 }
 
 #Test clean_function with row 1 in clean_offline
-lapply(clean_offline[1], clean_function) [[1]] %>% view()
+line_1 <- lapply(clean_offline[1], clean_function) [[1]]
+line_1
+```
+
+Our next task was to run the `clean_function` on all rows in our clean data set and bind them all together into a big data frame.
+```{r bind_all_lines}
+#Set up line_1 as the base for the offline_data frame
+offline_df <- as.data.frame(line_1)
+view(offline_df)
+
+#Run a loop so that the next line gets added to offline_df
+for(i in 2:length(clean_offline)) {
+  line_i <- lapply(clean_offline[i], clean_function) [[1]]
+  offline_df <- rbind(offline_df,line_i)
+}
+
 
 ```
 
-```{r}
-#This code chunk will use clean_function for all rows in clean_offline and rbind them together
-```
-
-2. Raw data cleaning
+# Data cleaning
 Name the variables.
 
 ```{r}
@@ -115,7 +147,7 @@ offline$time = OffLine$time/1000
 class(offline$time) = c("POSIXt","POSIXct")
 ```
 
-3. Data exploration
+# Data exploration
 ```{r}
 # Plot the orientation of the measurement device
 plot(ecdf(OffLine$orientation))
