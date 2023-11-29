@@ -107,15 +107,14 @@ clean_function = function(raw_data){
 }
 
 clean_dataframe = lapply(clean_offline, clean_function)
-
-```
-```{r}
 #covnert list into dataframe -> we need the do.call function
 clean_offline = as.data.frame(do.call(rbind, clean_dataframe))
 #add names
 names(clean_offline) = c("time", "scanMac", "posX", "posY", "posZ", "orientation", "mac", "signal", "channel", "type")
 head(clean_offline)
+
 ```
+
 
 # 2. Variables description
 
