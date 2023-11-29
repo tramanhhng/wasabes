@@ -2,7 +2,7 @@
 title: "Indoor Positioning Data Exploration"
 author: "STAT4/510 Wasabees Group"
 date: "2023-11-30"
-output: html_document
+output: pdf_document
 ---
 
 1. Describe your data
@@ -44,16 +44,17 @@ raw_offline = readLines("Data/offline.final.trace.txt")
 The format of the data is stored in a .txt file. Each location, and its subsequent 100 samples, are marked by the presence of a "#" symbol with three outputs.
 The text bellow depicts the first 6 rows found in the dataset, note how the first 3 entries are marked by the hash symbol. Separations between samples are delimitated by ",1". 
 
-```{r }
+```{r}
 
 raw_offline[1:4]
 str(raw_offline) 
 head(raw_offline)
+
 ```
 
-Upon further exploration, we created function to process the data into a suitable dataframe. We started by clean the rows with the "#" symbol. A total of `r length(raw_offline) - length(clean_offline)` were removed, resulting in `r length(clean_offline)` rows.Second, we utilize the semicolon as a separator for the different variables in each row, and then lately the [;=,] pattern found in the data to create matrices that store the observation and its corresponding measurements. We further subdivide the data to include the 10 target variables for the indoor positioning system. Lastly, we add the variable names to the clean dataframe. 
+Upon further exploration, we created function to process the data into a suitable dataframe. We started by clean the rows with the "#" symbol. A total of **r length(raw_offline) - length(clean_offline)** were removed, resulting in **r length(clean_offline)** rows.Second, we utilize the semicolon as a separator for the different variables in each row, and then lately the [;=,] pattern found in the data to create matrices that store the observation and its corresponding measurements. We further subdivide the data to include the 10 target variables for the indoor positioning system. Lastly, we add the variable names to the clean dataframe. 
 
-```{r split_one_line, echo = FALSE  eval = FALSE}
+```{r split_one_line, echo = FALSE,  eval = FALSE}
 
 #Exploration, do not run or eval for the document!
 
@@ -147,8 +148,8 @@ meanposZ = mean(OffLine$posY)
 maxposZ = max(OffLine$posY)
 minposZ = min(OffLine$posY)
 
-posZdf = data.frame(meanposZ, maxposZ, minposZ)  %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
-kbl(posZdf)
+posZdf = data.frame(meanposZ, maxposZ, minposZ)  
+kbl(posZdf) %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 boxplot(OffLine$posZ)
 
 kbl(head(OffLine), caption = "Clean Data") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
