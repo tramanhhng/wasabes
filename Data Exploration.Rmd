@@ -2,7 +2,7 @@
 title: "Indoor Positioning Data Exploration"
 author: "STAT4/510 Wasabees Group"
 date: "2023-11-30"
-output: pdf_document
+output: html_document
 ---
 
 1. Describe your data
@@ -16,95 +16,149 @@ library(kableExtra)
 library(tidyverse)
 ```
 
-1. Introduction
+# 1. Introduction - Data Description and Cleaning
 
-Indoor position systems (IPS) development is an active area of research that can be used in numerous settings. Part of efforts to develop, calibration and model these systems are achieved through the use of WIFI signals. The following report, describes and characterizes a large data set compiled in a 15 by 36 meter area that contains six (wifi routers) access points, signal strength, various locations and orientation of the devices.
+Indoor position systems (IPS) development is an active area of research that can be used in numerous settings. Part of efforts to develop, calibration and model these systems are achieved through the use of WIFI signals. The following report, describes and characterizes a large data set compiled in a 15 by 36 meter area that contains six (wifi routers) access points, signal strength, various locations and orientation of the devices (10 parameters total)
 The data is subdivided in two sub-sets, one denominated "offline data", which corresponds to various testing devices connected to the network at different locations and orientations, and an "online data", where 60 locations and orientations of the devices were selected at random.
 
 The offline data was collected designing a 1 meter resolution grid, resulting in 166 locations. In each of these locations, the device was oriented starting at 0 degrees inclination and at 45 degrees increments, and the strength signal measured. Furthermore, each combination of location/orientation was sampled 110 times. This grid sampling is intended to be used to calibrate a indoor positioning model. On the other hand, the online data was designed to simulate real-world data, in which locations are not bounded by the 1 meter grid used in the offline data, and were selected at random. This randomization included the orientation of the device and therefore, the online data consists of 60 randomly selected location/orientation combinations sampled 110 times. 
 
 More details of the floor plan, and location of online and offline data can be seen in Figure 1.
 
+
 For simplicity, this report will share the results found in the offline dataset, but initial process of data cleaning can be directly applied to the online data as well. 
 
 
 ![Figure 1: Flooplan location. Access points are squares. Grey dots are offline data locations and black dots are online data locations.](data/floorplan.jpg)
+Noting that the online and offline data sets share the same structure, in this document, we explore the offline data set with the expectation to apply the same method for the online data set.
 
 
-The format of the data is stored in a .txt file. Each location, and its subsequent 100 samples, is marked by the presence of a "#" symbol with three outputs.
-The text bellow depicts the first 10 rows found in the dataset, note how the first 3 entries are marked by the hash symbol. Separations between samples are delimitated by ",1"
 
-```{r echo = FALSE}
+```{r read_offline_data, echo = FALSE}
+
 #Read the offline data txt file, with each row in the txt file becoming a text string
 raw_offline = readLines("Data/offline.final.trace.txt")
 ```
 
+
+The format of the data is stored in a .txt file. Each location, and its subsequent 100 samples, are marked by the presence of a "#" symbol with three outputs.
+The text bellow depicts the first 6 rows found in the dataset, note how the first 3 entries are marked by the hash symbol. Separations between samples are delimitated by ",1". 
+
 ```{r }
 
 raw_offline[1:4]
-#kbl(raw_offline[1:4], caption = "Table 1: Raw Data Examples", col.name = "") %>% 
-#  kable_classic(full_width = F, html_font = "Cambria") %>% kable_styling()
-#kbl(PC1_load, caption = "Loadings for PC1 (scaled)", col.names = c('Predictor', "Loading Value"))%>% kable_classic(full_width = F, html_font = "Cambria")
-
+str(raw_offline) 
+head(raw_offline)
 ```
 
+Upon further exploration, we created function to process the data into a suitable dataframe. We started by clean the rows with the "#" symbol. A total of `r length(raw_offline) - length(clean_offline)` were removed, resulting in `r length(clean_offline)` rows.Second, we utilize the semicolon as a separator for the different variables in each row, and then lately the [;=,] pattern found in the data to create matrices that store the observation and its corresponding measurements. We further subdivide the data to include the 10 target variables for the indoor positioning system. Lastly, we add the variable names to the clean dataframe. 
 
+```{r split_one_line, echo = FALSE  eval = FALSE}
 
+#Exploration, do not run or eval for the document!
 
-```{r clean_#_rows}
-
-#The txt file contains multiple rows starting with # (for example, rows 1, 2, 3) which does not share the same structure as other rows. The code below gets rid of these rows.
-
-clean_offline <- raw_offline[substr(raw_offline,start=1, stop=1) != "#"]
-str(clean_offline)
-
-#After this code, clean_offline has 146,080 rows, less than the original 151,392 rows
-```
-
-
-```{r split_line}
-#In clean_offline, each row now has the same structure:
-#Semicolons separate between variables
-#Equal signs separate variable names and values
-#For the signal readings, readings of the same access point are separated by commas
-
-#The code below took all the separation out of one line (line 1)
-line = strsplit(clean_offline[1], "[; , =]") [[1]]
-line
+#The code below took all the separation out of one line. We take line 1 as an example and our separators are ; , and =
+separator = strsplit(clean_offline[1], "[; , =]") [[1]]
+separator
 
 #The code below takes the time, id, pos, and degree readings out of "line" and arrange them in a matrix
-line[c(2,4,6,7,8,10)] %>% 
-  matrix(ncol=6,byrow=TRUE) %>% view()
+aa = separator[c(2,4,6,7,8,10)] %>% 
+  matrix(ncol=6,byrow=TRUE)
+aa
 
-#The code below takes the mac, signal, frequency, and device type reading out of "line" and arrange them in a matrix
-line[-(1:10)] %>%
-  matrix(ncol=4, byrow=TRUE) %>% view()
+#The code below takes the mac, signal, channel, and device type reading out of "line" and arrange them in a matrix
+bb= separator[-(1:10)] %>%
+  matrix(ncol=4, byrow=TRUE)
+bb
 
-#After this, we can combine the two matrices to create one row of data for our ideal data frame. 
+#After this, we can combine the two matrices into a data frame. Our unit of analysis is signal strength, which mean each signal strength value needs to be one single observation. So to combine the data, we need to duplicate `a` by the number of rows in `b`.
 
-#The code below attempts to put all the above operations in this code chunk in one function
-clean_function = function(x) {
-  line = strsplit(x, "[; , =]") [[1]]
-  a = line[-(1:10)] %>% matrix(ncol=4, byrow=TRUE)  
-  b = line[c(2,4,6,7,8,10)] %>% matrix(ncol=6, nrow=nrow(a), byrow=TRUE) 
-  cbind(b,a)
+aaa = separator[c(2,4,6,7,8,10)] %>% 
+  matrix(ncol=6,nrow=nrow(bb), byrow=TRUE)
+
+cbind(aa,bb) %>% view()
+```
+
+```{r clean_#_rows, echo = FALSE}
+
+# The code below removes all rows that start with #
+#After this code, clean_offline has 146,080 rows, less than the original 151,392 rows
+clean_offline <- raw_offline[substr(raw_offline,start=1, stop=1) != "#"]
+#remove top rows 
+clean_offline = clean_offline[-3]
+#looking good
+#head(clean_offline)
+#We have rows! =)
+length(clean_offline)
+
+
+clean_function = function(raw_data){
+  #check first element of the 2d array created -> row of observation
+  separators = strsplit(raw_data, '[;=,]')[[1]]
+  critical_val = 10
+  if (length(separators) == critical_val)
+    return (NULL)
+  #separate variables realted to the devices!
+  devices = matrix(separators[-(1:10)], ncol = 4, byrow=TRUE)
+  #only the ones that have info
+  cbind(matrix(separators[c(2,4,6,7,8,10)], 
+               nrow = nrow(devices), ncol = 6, byrow = TRUE), devices)
 }
 
-#Test clean_function with row 1 in clean_offline
-lapply(clean_offline[1], clean_function) [[1]] %>% view()
+clean_dataframe = lapply(clean_offline, clean_function)
 
 ```
+```{r}
+#covnert list into dataframe -> we need the do.call function
+clean_offline = as.data.frame(do.call(rbind, clean_dataframe))
+#add names
+names(clean_offline) = c("time", "scanMac", "posX", "posY", "posZ", "orientation", "mac", "signal", "channel", "type")
+head(clean_offline)
+```
+
+# 2. Variables description
+
+
+The clean data set contains the following variables:
+*`time`: time in miliseconds
+*`scanMac`: IP address of the scanning device
+*`pos`: the 3-D coordination of the scanning device
+*`orientation`: the scanning device's orientation
+*`mac`: the IP address of the access points
+*`signal`: signal strength in dBm
+*`channel`: the channel frequency
+*`type`: type of device (access point = 3, device in adhoc mode =1)  
+
+These variables were converted to their respective format. 
+
+*justify here why we excluded dertain things -> posZ, and type 3* -> can be justified with boxplot or whatever.
+
 
 ```{r}
-#This code chunk will use clean_function for all rows in clean_offline and rbind them together
+numeric_var = c("time","posX","posY","posZ","orientation","signal")
+clean_offline[numeric_var] = lapply(clean_offline[numeric_var],as.numeric)
+OffLine = clean_offline[clean_offline$type == "3", ]
+OffLine = clean_offline[, "type" != names(clean_offline)]
+OffLine$rawtime = clean_offline$time
+OffLine$time = OffLine$time/1000
+class(OffLine$time) = c("POSIXt","POSIXct")
+
+meanposZ = mean(OffLine$posY)
+maxposZ = max(OffLine$posY)
+minposZ = min(OffLine$posY)
+
+posZdf = data.frame(meanposZ, maxposZ, minposZ)  %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
+kbl(posZdf)
+boxplot(OffLine$posZ)
+
+kbl(head(OffLine), caption = "Clean Data") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
+
+#kbl(PC1_load, caption = "Loadings for PC1 (scaled)", col.names = c('Predictor', "Loading Value"))%>% kable_classic(full_width = F, html_font = "Cambria")
 ```
 
-# Raw data cleaning
-```{r}
-
-```
-
+# 3. Data exploration
 ```{r}
 # Plot the orientation of the measurement device
-#plot(ecdf(clean_offline$orientation))
+plot(ecdf(clean_offline$orientation))
+plot(ecdf(OffLine$orientation))
 ```
