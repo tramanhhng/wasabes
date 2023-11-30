@@ -32,7 +32,7 @@ For simplicity, this report will share the results found in the offline dataset,
 ![Figure 1: Flooplan location. Access points are squares. Grey dots are offline data locations and black dots are online data locations.](data/floorplan.jpg)
 Noting that the online and offline data sets share the same structure, in this document, we explore the offline data set with the expectation to apply the same method for the online data set.
 
-
+Circles serve as markers for the positions where "offline" measurements were conducted, while black squares indicate the locations of six access points. These reference positions provide a calibration of signal strengths within the building, forming the basis for constructing a model to predict the whereabouts of a hand-held device when its location is unknown. The hand-held device supplies x and y coordinates, akin to latitude and longitude on a map, along with its orientation. Signal strengths are recorded at eight orientations in 45-degree intervals. For every location and orientation combination, 110 signal strength measurements were documented for each of the six access points. In the analysis, various data setup approaches were considered, and a table detailing the variables in the dataset slated for analysis is provided below, with a brief overview to avoid delving into excessive detail.
 
 ```{r read_offline_data, echo = FALSE}
 
