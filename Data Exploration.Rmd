@@ -59,7 +59,7 @@ According to documents provided by the client, the data contains the following v
 
 * `type`: type of device (access point = 3, device in adhoc mode =1)  
 
-## 2.2 Data Formatting
+## 2.2 Data formatting
 
 
 ```{r read_offline_data}
@@ -69,7 +69,9 @@ raw_offline = readLines("Data/offline.final.trace.txt")
 ```
 
 
-The data is stored in a .txt file. The first six rows of the data is printed below
+Our client stores their data in a .txt file. This sections documents our steps to transfer the text data into a data frame format so that it is ready for further cleaning and analysis. 
+
+The first six rows of the original, raw data is printed below.
 
 ```{r}
 head(raw_offline)
@@ -81,7 +83,7 @@ Below are our observations that shaped our approach for data formatting:
 
 * The data rows contains a series of variables and values, separated by semicolons. We performed a simple split using semicolon as the separator, and found that some variables, such as `pos` and `mac` are further subdivided. Each `pos` value corresponds to a set of x, y, and z coordination. Each `mac` value corresponds to readings of `signal`, `channel`, and `type` respectively. 
 
-Since our model is supposed to rely on wifi signal strength to predict device location, we need to format our data so that each observation corresponds to one single `signal` value.
+
 
 ```{r data_explanation, comment = ''}
 
@@ -92,7 +94,7 @@ head(toPrint)
 #kbl(toPrint, caption = "Raw Data Format") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 ```
 
-To transfer the data into a dataframe, we performed the following operations:   
+Since our model is supposed to rely on wifi signal strength to predict device location, we need to format our data so that each observation corresponds to one single `signal` value. To transfer the data into a dataframe, we performed the following operations:   
 
 * We start by cleaning the rows with the "#" symbol. A total of 5312 rows are removed, resulting in 146,080 rows.  
 
@@ -163,19 +165,14 @@ clean_offline[1:3,]
 ```
 
 
-## 2.3 Data Cleaning
-
-
-Before further exploring and analyzing the data, we do a pre-exploration process, to assess if variables should be removed from the data set, and if conversions were required. The list below presents the operations we performed:
+Before further exploring and analyzing the data, we conduct a simple assessment to convert variables into the correct useful types and formats. We performed the following operations:
 
 * We observe that some variables, such as `time`, `position`, `orientation`, `signal` and `channel`, should be converted to numerical for analysis.  
 
 * We now focus on the `time` variable. According documents provided by the client, time is expressed in milliseconds from midnight on January 1st, 1970. We convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. Additionally, we retain the more precise time information in 'rawTime' in case it becomes necessary for future analysis.
 
-* Based on the documents received from the client, a value of 1 for the variable `type` corresponds to ad-hoc devices. However, for the development and testing of the IPS, we will utilize only the signals measured at fixed access points. We removed all rows that have `type` = 1. After this removal, the variable `type` has a value of 3 for all observations, so we eliminate the variable `type` from the data set. 
 
-
-Table 1 provides our cleaned and formatted offline dataset.
+Table 1 provides our formatted offline dataset.
 
 ```{r formatting_df, echo = FALSE}
 #Turn some variables into numeric
@@ -187,19 +184,77 @@ clean_offline$rawtime = clean_offline$time
 clean_offline$time = clean_offline$time/1000
 class(clean_offline$time) = c("POSIXt","POSIXct")
 
+kbl(head(clean_offline), caption = "Clean Data with transformed variables", position="b") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 5)
+
+```
+
+
+## 2.3 Data cleaning
+In this section, we perform operations to remove observations not intended for our model, as well as variables not needed for our analysis.
+
+### Access points
+
+**Access point types:** Based on the documents received from the client, a value of 1 for the variable `type` corresponds to ad-hoc devices. However, for the development and testing of the IPS, we will utilize only the signals measured at fixed access points. We removed all rows that have `type` = 1. This operation removes `r length(clean_offline) - length(OffLine)` observations, resulting in `r length(OffLine)` observations for all accesspoint devices. Now, since the variable `type` has a value of 3 for all observations, so we eliminate the variable `type` from the data set.
+
+```{r}
 #Keep access point devices only
 OffLine = clean_offline[clean_offline$type == "3", ]
 OffLine = OffLine[, "type" != names(OffLine)]
+```
+
+**Access point ID:** tally mac and filter for 6 access points the client provide
+
+**Access point location:** Add x y z of access point locations
+
+### Orientation of hand-held devices
+As provided by the client, the orientation of the hand-held device is supposed to be a set of exactly eight angles from 0 - 315 degrees in increments of 45 degrees. However, in practice, the measured orientations slightly deviate from these eight values. To further examine the distribution of the 'orientation' variable, we will analyze it through an empirical cumulative distribution function (ECDF).
+
+```{r orientation_plot}
+# Plot the orientation of the measurement device
+#plot(ecdf(clean_offline$orientation)) #clean_offline contains the adhoc device as well. Unless you have specific reasons here, I wouldn't display this one, only the plot below that works on OffLine.
+
+#Create the ecdf plot for the variable orientation
+plot(ecdf(OffLine$orientation),
+     main = "Distribution of the Orientation variable",
+     xlab = "Orientation",
+     ylab = "Cumulative probability",
+     xlim=c(0,360),
+     lab=c(8,11,5), #I tried to make the x-axis ticks appear at 0, 45, 90 but it didn't work
+     frame.plot=FALSE)
+
+```
+
+From the plot, we observe a concentration of observations around 0, 45, 90 degrees, and so forth. However, there is evident dispersion in between, with instances like 47.5 degrees, 358.2 degrees, and so on. There is also a value of 360, which should be converted to 0. As instructed by the client, we group the orientation values into bins from 0 - 315 in increments of 45.
+
+```{r orientation}
+
+#Develop and apply a function to convert orientation values
+convert_orient <- function(orientation) {
+  rec_orient <- round(orientation / 45) * 45
+  rec_orient <- ifelse(rec_orient == 360, 0, rec_orient)
+  return(rec_orient)
+}
+
+#Recode orientation values
+OffLine <- OffLine %>% 
+ mutate(orientation=convert_orient(orientation))
+
+```
+
+### 
 
 
+# 3. Data Exploration
+
+```{r}
 #check numerical data
 mean_off = OffLine %>% select(posX, posY, posZ, orientation, signal)
 mean_off_p = as.data.frame(colMeans(mean_off))
 
 #kbl(mean_off_p, caption = "Mean values for numerical variables") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 
-
 ```
+
 
 Table 2 provides a basic exploration of each variable and calculate the mean for the numerical variables (i.e., position, orientation, signal). We find that position-z, has a mean of zero. Further exploration shows that the variable has a value of zero for all the observations in the offline dataset. This seemingly anomalous value is due to the fact that all of the readings were taken on one floor of the building. We were tempted to delete the variable posZ; however, since it is a meaningful variable and we do not know, for now, if the online dataset has different posZ values, we will keep it for the current stage of our project.
 
@@ -230,7 +285,7 @@ axis(2, cex.axis = 0.8)
 
 
 ```{r table, echo=FALSE}
-kbl(head(OffLine), caption = "Clean Data with transformed variables") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 5)
+
 
 kbl(mean_off_p, caption = "Mean values for numerical variables") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 
@@ -238,15 +293,5 @@ kbl(posZdf, caption = "Min, Max and Mean values for posZ") %>% kable_classic(ful
 ```
 
 
-# 3. Data exploration
-
-If you remember, the observations for orientation were configured at intervals of 0 degrees, 45 degrees, 90 degrees, and so forth, resulting in more than eight values. To further examine the distribution of the 'orientation' variable, we will analyze it through an empirical cumulative distribution function (ECDF).
-
-```{r}
-# Plot the orientation of the measurement device
-plot(ecdf(clean_offline$orientation))
-plot(ecdf(OffLine$orientation))
-```
-From the plot, we observe a concentration of observations around 0, 45, 90 degrees, and so forth. However, there is evident dispersion in between, with instances like 47.5 degrees, 358.2 degrees, and so on. This diversity in values is not a drawback; in fact, it could be valuable in its current form. Alternatively, we could derive value by categorizing these values into bins to align with the original eight values. To implement this, we will develop a function.
 
 # 4. Challenges 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.6)  30 NOV 2023 11:32
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.6)  30 NOV 2023 12:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -444,9 +444,6 @@ File: l3backend-pdftex.def 2022-10-26 L3 backend support: PDF output (pdfTeX)
 
 LaTeX Warning: Label `tab:table' multiply defined.
 
-
-LaTeX Warning: Label `tab:table' multiply defined.
-
 )
 \openout1 = `Data-Exploration.aux'.
 
@@ -543,7 +540,7 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 86.
 (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-<data/floorplan.jpg, id=32, 173.6889pt x 91.3011pt>
+<data/floorplan.jpg, id=40, 173.6889pt x 91.3011pt>
 File: data/floorplan.jpg Graphic file (type jpg)
 <use data/floorplan.jpg>
 Package pdftex.def Info: data/floorplan.jpg  used on input line 143.
@@ -574,54 +571,48 @@ Overfull \hbox (1745.73854pt too wide) in paragraph at lines 206--206
  []
 
 [2 <./data/floorplan.jpg>]
-<Data-Exploration_files/figure-latex/posZ-1.pdf, id=57, 436.63126pt x 253.94875pt>
-File: Data-Exploration_files/figure-latex/posZ-1.pdf Graphic file (type pdf)
-<use Data-Exploration_files/figure-latex/posZ-1.pdf>
-Package pdftex.def Info: Data-Exploration_files/figure-latex/posZ-1.pdf  used on input line 314.
-(pdftex.def)             Requested size: 436.63019pt x 253.94812pt.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 321.
-[3]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 345.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 345.
-[4 <./Data-Exploration_files/figure-latex/posZ-1.pdf>]
-<Data-Exploration_files/figure-latex/unnamed-chunk-4-1.pdf, id=80, 440.64626pt x 284.06125pt>
-File: Data-Exploration_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (type pdf)
-<use Data-Exploration_files/figure-latex/unnamed-chunk-4-1.pdf>
-Package pdftex.def Info: Data-Exploration_files/figure-latex/unnamed-chunk-4-1.pdf  used on input line 385.
-(pdftex.def)             Requested size: 440.66533pt x 284.07353pt.
-<Data-Exploration_files/figure-latex/unnamed-chunk-4-2.pdf, id=81, 440.64626pt x 284.06125pt>
-File: Data-Exploration_files/figure-latex/unnamed-chunk-4-2.pdf Graphic file (type pdf)
-<use Data-Exploration_files/figure-latex/unnamed-chunk-4-2.pdf>
-Package pdftex.def Info: Data-Exploration_files/figure-latex/unnamed-chunk-4-2.pdf  used on input line 386.
-(pdftex.def)             Requested size: 440.66533pt x 284.07353pt.
+(Font)              <5> on input line 294.
 
-Underfull \hbox (badness 10000) in paragraph at lines 385--394
-[][]
+Overfull \hbox (7.91316pt too wide) in paragraph at lines 294--311
+ [][] 
  []
 
-[5 <./Data-Exploration_files/figure-latex/unnamed-chunk-4-1.pdf> <./Data-Exploration_files/figure-latex/unnamed-chunk-4-2.pdf>] [6] (./Data-Exploration.aux)
+[3]
+<Data-Exploration_files/figure-latex/orientation_plot-1.pdf, id=75, 435.6275pt x 283.0575pt>
+File: Data-Exploration_files/figure-latex/orientation_plot-1.pdf Graphic file (type pdf)
+<use Data-Exploration_files/figure-latex/orientation_plot-1.pdf>
+Package pdftex.def Info: Data-Exploration_files/figure-latex/orientation_plot-1.pdf  used on input line 338.
+(pdftex.def)             Requested size: 435.62643pt x 283.0568pt.
+<Data-Exploration_files/figure-latex/posZ-1.pdf, id=76, 436.63126pt x 253.94875pt>
+File: Data-Exploration_files/figure-latex/posZ-1.pdf Graphic file (type pdf)
+<use Data-Exploration_files/figure-latex/posZ-1.pdf>
+Package pdftex.def Info: Data-Exploration_files/figure-latex/posZ-1.pdf  used on input line 361.
+(pdftex.def)             Requested size: 436.63019pt x 253.94812pt.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 368.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 368.
+[4 <./Data-Exploration_files/figure-latex/orientation_plot-1.pdf>] [5 <./Data-Exploration_files/figure-latex/posZ-1.pdf>] (./Data-Exploration.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `Data-Exploration.out' has not changed.
-(rerunfilecheck)             Checksum: 399E7598A9A2CB3A7173AEE1E7F68DB7;1103.
+(rerunfilecheck)             Checksum: FA59C12A017D888CB920C4DD28CF4D87;1453.
  ) 
 Here is how much of TeX's memory you used:
- 12353 strings out of 476928
- 196690 string characters out of 5824462
- 545935 words of memory out of 5000000
+ 12356 strings out of 476928
+ 196453 string characters out of 5824462
+ 549088 words of memory out of 5000000
  33331 multiletter control sequences out of 15000+600000
- 515320 words of font info for 69 fonts, out of 8000000 for 9000
+ 518315 words of font info for 70 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,9n,77p,480b,580s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{/Users/tramanh/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/tramanh/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}</Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr5.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on Data-Exploration.pdf (6 pages, 311524 bytes).
+{/Users/tramanh/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/tramanh/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}</Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr5.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
+Output written on Data-Exploration.pdf (5 pages, 319073 bytes).
 PDF statistics:
- 146 PDF objects out of 1000 (max. 8388607)
- 113 compressed objects within 2 object streams
- 29 named destinations out of 1000 (max. 500000)
- 77 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 149 PDF objects out of 1000 (max. 8388607)
+ 118 compressed objects within 2 object streams
+ 32 named destinations out of 1000 (max. 500000)
+ 88 words of extra memory for PDF output out of 10000 (max. 10000000)
 
