@@ -135,6 +135,7 @@ These variables were converted to their respective format.
 As we continue to explore our variables and prepare them for analysis, we checked for data that should be omitted from the analysis. Here are some visualizations to help explain what we've found.
 
 It would be beneficial to enhance the device's readability by replacing the numerical representation of 1 and 3. To achieve this, we can transform the variable into a factor with the categories "adhoc" and "access point." However, for the development and testing of our model, we will exclusively utilize the signal strengths measured at the fixed access points. Now equipped with this information, we will eliminate records related to adhoc measurements and exclude the 'type' variable from our data frame.
+Now, let's focus on the 'time' variable. According to the documentation, time is expressed in milliseconds from midnight on January 1st, 1970. We can convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. Additionally, we'll retain the more precise time information in 'rawTime' in case it becomes necessary for future analysis.
 
 ```{r}
 numeric_var = c("time","posX","posY","posZ","orientation","signal")
