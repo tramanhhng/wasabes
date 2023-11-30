@@ -35,12 +35,13 @@ knitr::include_graphics("data/floorplan.jpg")
 Circles serve as markers for the positions where "offline" measurements were conducted, while black squares indicate the locations of six access points. These reference positions provide a calibration of signal strengths within the building, forming the basis for constructing a model to predict the whereabouts of a hand-held device when its location is unknown. The hand-held device supplies x and y coordinates, akin to latitude and longitude on a map, along with its orientation. Signal strengths are recorded at eight orientations in 45-degree intervals. For every location and orientation combination, 110 signal strength measurements were documented for each of the six access points.
 
 
-# 2. Variables Description
+# 2. Data Processing
 
-## 2.1 Data Formatting
+In this section, we provide a brief description of steps undertaken to format and clean the data set.
 
+## 2.1 Variable Description
 
-The data provided by the client, contains the following variables:
+According to documents provided by the client, the data contains the following variables:
 
 * `time`: time in miliseconds. 
 
@@ -58,7 +59,8 @@ The data provided by the client, contains the following variables:
 
 * `type`: type of device (access point = 3, device in adhoc mode =1)  
 
-As a first goal, prior to exploration, we organize and clean the dataset. In the analysis, various data setup approaches were considered, and a table detailing the variables in the dataset slated for analysis is provided below, with a brief overview to avoid delving into excessive detail.
+## 2.2 Data Formatting
+
 
 ```{r read_offline_data}
 
@@ -67,7 +69,19 @@ raw_offline = readLines("Data/offline.final.trace.txt")
 ```
 
 
-The format of the data is stored in a .txt file. Each location, and its subsequent 100 samples, are marked by the presence of a "#" symbol with three outputs. Below, an example of a row found in the dataset after some basic cleaning. We observe some variables, such as position ("pos") and mac are further subdivided.
+The data is stored in a .txt file. The first six rows of the data is printed below
+
+```{r}
+head(raw_offline)
+```
+
+Below are our observations that shaped our approach for data formatting:
+
+* The first three rows, marked by the character #, provides information for the next batch of 110 readings. Similar rows like this re-appear multiple times in the data set.
+
+* The data rows contains a series of variables and values, separated by semicolons. We performed a simple split using semicolon as the separator, and found that some variables, such as `pos` and `mac` are further subdivided. Each `pos` value corresponds to a set of x, y, and z coordination. Each `mac` value corresponds to readings of `signal`, `channel`, and `type` respectively. 
+
+Since our model is supposed to rely on wifi signal strength to predict device location, we need to format our data so that each observation corresponds to one single `signal` value.
 
 ```{r data_explanation, comment = ''}
 
@@ -78,9 +92,9 @@ head(toPrint)
 #kbl(toPrint, caption = "Raw Data Format") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 ```
 
-Upon further exploration, we create a function to process the data into a suitable dataframe.   
+To transfer the data into a dataframe, we performed the following operations:   
 
-* We start by cleaning the rows with the "#" symbol. A total of 5313 rows are removed, resulting in 146,079 rows.  
+* We start by cleaning the rows with the "#" symbol. A total of 5312 rows are removed, resulting in 146,080 rows.  
 
 * Second, we utilize semicolon, colon, and equal sign as separators for the different variables in each row and re-format the data so each row represents an observation of the variable signal strength.  
 
@@ -115,32 +129,29 @@ cbind(aa,bb) %>% view()
 ```{r clean_#_rows, echo = FALSE, comment = ''}
 
 # The code below removes all rows that start with #
-#After this code, clean_offline has 146,080 rows, less than the original 151,392 rows
 clean_offline <- raw_offline[substr(raw_offline,start=1, stop=1) != "#"]
+#After this code, clean_offline has 146,080 rows, less than the original 151,392 rows
 
-#remove top rows 
-#clean_offline = clean_offline[-3] #?why delete row 3?
-#looking good
-#head(clean_offline)
-#We have rows! =)
-#length(clean_offline)
-
+#Create a clean_function to split each row into variables and put the variables into a matrix format
 clean_function = function(raw_data){
   #check first element of the 2d array created -> row of observation
   separators = strsplit(raw_data, '[;=,]')[[1]]
   critical_val = 10
   if (length(separators) == critical_val)
     return (NULL)
-  #separate variables realted to the devices!
+  #separate variables related to the devices!
   devices = matrix(separators[-(1:10)], ncol = 4, byrow=TRUE)
   #only the ones that have info
   cbind(matrix(separators[c(2,4,6,7,8,10)], 
                nrow = nrow(devices), ncol = 6, byrow = TRUE), devices)
 }
 
+#Apply clean_function to the whole clean_offline dataset
 clean_dataframe = lapply(clean_offline, clean_function)
+
 #covnert list into dataframe -> we need the do.call function
 clean_offline = as.data.frame(do.call(rbind, clean_dataframe))
+
 #add names
 names(clean_offline) = c("time", "scanMac", "posX", "posY", "posZ", "orientation", "mac", "signal", "channel", "type")
 ```
@@ -152,28 +163,34 @@ clean_offline[1:3,]
 ```
 
 
-## 2.2 Data Cleaning
+## 2.3 Data Cleaning
 
 
 Before further exploring and analyzing the data, we do a pre-exploration process, to assess if variables should be removed from the data set, and if conversions were required. The list below presents the operations we performed:
 
 * We observe that some variables, such as `time`, `position`, `orientation`, `signal` and `channel`, should be converted to numerical for analysis.  
 
+* We now focus on the `time` variable. According documents provided by the client, time is expressed in milliseconds from midnight on January 1st, 1970. We convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. Additionally, we retain the more precise time information in 'rawTime' in case it becomes necessary for future analysis.
+
 * Based on the documents received from the client, a value of 1 for the variable `type` corresponds to ad-hoc devices. However, for the development and testing of the IPS, we will utilize only the signals measured at fixed access points. We removed all rows that have `type` = 1. After this removal, the variable `type` has a value of 3 for all observations, so we eliminate the variable `type` from the data set. 
 
-* We now focus on the `time` variable. According documents provided by the client, time is expressed in milliseconds from midnight on January 1st, 1970. We convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. Additionally, we retain the more precise time information in 'rawTime' in case it becomes necessary for future analysis.
 
 Table 1 provides our cleaned and formatted offline dataset.
 
 ```{r formatting_df, echo = FALSE}
-
+#Turn some variables into numeric
 numeric_var = c("time","posX","posY","posZ","orientation","signal", "channel")
 clean_offline[numeric_var] = lapply(clean_offline[numeric_var],as.numeric)
+
+#Add the raw time column for record keeping, turn the time column into seconds and formatted in y-m-d time.
+clean_offline$rawtime = clean_offline$time
+clean_offline$time = clean_offline$time/1000
+class(clean_offline$time) = c("POSIXt","POSIXct")
+
+#Keep access point devices only
 OffLine = clean_offline[clean_offline$type == "3", ]
-OffLine = clean_offline[, "type" != names(clean_offline)]
-OffLine$rawtime = clean_offline$time
-OffLine$time = OffLine$time/1000
-class(OffLine$time) = c("POSIXt","POSIXct")
+OffLine = OffLine[, "type" != names(OffLine)]
+
 
 #check numerical data
 mean_off = OffLine %>% select(posX, posY, posZ, orientation, signal)
@@ -181,7 +198,15 @@ mean_off_p = as.data.frame(colMeans(mean_off))
 
 #kbl(mean_off_p, caption = "Mean values for numerical variables") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 
-#Check min,max andmean vals for posZ
+
+```
+
+Table 2 provides a basic exploration of each variable and calculate the mean for the numerical variables (i.e., position, orientation, signal). We find that position-z, has a mean of zero. Further exploration shows that the variable has a value of zero for all the observations in the offline dataset. This seemingly anomalous value is due to the fact that all of the readings were taken on one floor of the building. We were tempted to delete the variable posZ; however, since it is a meaningful variable and we do not know, for now, if the online dataset has different posZ values, we will keep it for the current stage of our project.
+
+```{r posZ}
+#Let's keep posZ because it is a meaningful pos variable that could be in our model, and we don't know if the online dataset has other values for posZ.
+
+#Check min,max andmean vals for posZ 
 meanposZ = mean(OffLine$posZ)
 maxposZ = max(OffLine$posZ)
 minposZ = min(OffLine$posZ)
@@ -202,6 +227,8 @@ axis(1, cex.axis = 0.8)
 axis(2, cex.axis = 0.8)
 ```
 
+
+
 ```{r table, echo=FALSE}
 kbl(head(OffLine), caption = "Clean Data with transformed variables") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 5)
 
@@ -209,9 +236,6 @@ kbl(mean_off_p, caption = "Mean values for numerical variables") %>% kable_class
 
 kbl(posZdf, caption = "Min, Max and Mean values for posZ") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 ```
-
-We conduct a basic exploration of each variable and calculate the mean for the numerical variables (i.e., position, orientation, signal) and find that position-z, has a mean of zero. Further exploration shows that the variable has a value of zero for all the data, so decide to remove it. This, seemingly anomalous value, is due to the fact that all of the readings were taken on one floor of the building.
-
 
 
 # 3. Data exploration

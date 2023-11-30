@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.6)  30 NOV 2023 10:41
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.6)  30 NOV 2023 11:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -543,7 +543,7 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 86.
 (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-<data/floorplan.jpg, id=28, 173.6889pt x 91.3011pt>
+<data/floorplan.jpg, id=32, 173.6889pt x 91.3011pt>
 File: data/floorplan.jpg Graphic file (type jpg)
 <use data/floorplan.jpg>
 Package pdftex.def Info: data/floorplan.jpg  used on input line 143.
@@ -551,91 +551,77 @@ Package pdftex.def Info: data/floorplan.jpg  used on input line 143.
 [1
 
 {/Users/tramanh/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 171.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 175.
 (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 171.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 175.
 (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-Overfull \hbox (1913.73805pt too wide) in paragraph at lines 235--235
-[]\T1/lmtt/m/n/10 [1] "t=1139643118358;id=00:02:2D:21:0F:33;pos=0.0,0.0,0.0;degree=0.0;00:14:bf:b1:97:8a=-38,2437000000,3;00:14:bf:b1:97:90=-56,2427000000,3;00:0f:a3:39:e1:c0=-53,2462000000,3;00:14:bf:b1:97:8d=-65,2442000000,3;00:14:bf:b1:97:81=-65,2422000000,3;00:14:bf:3b:c7:c6=-66,2432000000,3;00:0f:a3:39:dd:cd=-75,2412000000,3;00:0f:a3:39:e0:4b=-78,2462000000,3;00:0f:a3:39:e2:10=-87,2437000000,3;02:64:fb:68:52:e6=-88,2447000000,1;02:00:42:55:31:00=-84,2457000000,1"[] 
+Overfull \hbox (1929.488pt too wide) in paragraph at lines 206--206
+[]\T1/lmtt/m/n/10 ## [4] "t=1139643118358;id=00:02:2D:21:0F:33;pos=0.0,0.0,0.0;degree=0.0;00:14:bf:b1:97:8a=-38,2437000000,3;00:14:bf:b1:97:90=-56,2427000000,3;00:0f:a3:39:e1:c0=-53,2462000000,3;00:14:bf:b1:97:8d=-65,2442000000,3;00:14:bf:b1:97:81=-65,2422000000,3;00:14:bf:3b:c7:c6=-66,2432000000,3;00:0f:a3:39:dd:cd=-75,2412000000,3;00:0f:a3:39:e0:4b=-78,2462000000,3;00:0f:a3:39:e2:10=-87,2437000000,3;02:64:fb:68:52:e6=-88,2447000000,1;02:00:42:55:31:00=-84,2457000000,1"[] 
  []
 
 
-Overfull \hbox (1729.98859pt too wide) in paragraph at lines 235--235
-[]\T1/lmtt/m/n/10 [2] "t=1139643118744;id=00:02:2D:21:0F:33;pos=0.0,0.0,0.0;degree=0.0;00:14:bf:b1:97:8a=-38,2437000000,3;00:0f:a3:39:e1:c0=-54,2462000000,3;00:14:bf:b1:97:90=-56,2427000000,3;00:14:bf:3b:c7:c6=-67,2432000000,3;00:14:bf:b1:97:81=-66,2422000000,3;00:14:bf:b1:97:8d=-70,2442000000,3;00:0f:a3:39:e0:4b=-79,2462000000,3;00:0f:a3:39:dd:cd=-73,2412000000,3;00:0f:a3:39:e2:10=-83,2437000000,3;02:00:42:55:31:00=-85,2457000000,1"[] 
+Overfull \hbox (1745.73854pt too wide) in paragraph at lines 206--206
+[]\T1/lmtt/m/n/10 ## [5] "t=1139643118744;id=00:02:2D:21:0F:33;pos=0.0,0.0,0.0;degree=0.0;00:14:bf:b1:97:8a=-38,2437000000,3;00:0f:a3:39:e1:c0=-54,2462000000,3;00:14:bf:b1:97:90=-56,2427000000,3;00:14:bf:3b:c7:c6=-67,2432000000,3;00:14:bf:b1:97:81=-66,2422000000,3;00:14:bf:b1:97:8d=-70,2442000000,3;00:0f:a3:39:e0:4b=-79,2462000000,3;00:0f:a3:39:dd:cd=-73,2412000000,3;00:0f:a3:39:e2:10=-83,2437000000,3;02:00:42:55:31:00=-85,2457000000,1"[] 
+ []
+
+
+Overfull \hbox (1745.73854pt too wide) in paragraph at lines 206--206
+[]\T1/lmtt/m/n/10 ## [6] "t=1139643119002;id=00:02:2D:21:0F:33;pos=0.0,0.0,0.0;degree=0.0;00:14:bf:b1:97:8a=-38,2437000000,3;00:0f:a3:39:e1:c0=-54,2462000000,3;00:14:bf:b1:97:90=-57,2427000000,3;00:14:bf:b1:97:81=-66,2422000000,3;00:14:bf:3b:c7:c6=-69,2432000000,3;00:14:bf:b1:97:8d=-70,2442000000,3;00:0f:a3:39:e0:4b=-78,2462000000,3;00:0f:a3:39:e2:10=-83,2437000000,3;00:0f:a3:39:dd:cd=-65,2412000000,3;02:64:fb:68:52:e6=-90,2447000000,1"[] 
  []
 
 [2 <./data/floorplan.jpg>]
-Overfull \hbox (1729.98859pt too wide) in paragraph at lines 235--235
-[]\T1/lmtt/m/n/10 [3] "t=1139643119002;id=00:02:2D:21:0F:33;pos=0.0,0.0,0.0;degree=0.0;00:14:bf:b1:97:8a=-38,2437000000,3;00:0f:a3:39:e1:c0=-54,2462000000,3;00:14:bf:b1:97:90=-57,2427000000,3;00:14:bf:b1:97:81=-66,2422000000,3;00:14:bf:3b:c7:c6=-69,2432000000,3;00:14:bf:b1:97:8d=-70,2442000000,3;00:0f:a3:39:e0:4b=-78,2462000000,3;00:0f:a3:39:e2:10=-83,2437000000,3;00:0f:a3:39:dd:cd=-65,2412000000,3;02:64:fb:68:52:e6=-90,2447000000,1"[] 
- []
-
-
-Overfull \hbox (1913.73805pt too wide) in paragraph at lines 235--235
-[]\T1/lmtt/m/n/10 [4] "t=1139643119263;id=00:02:2D:21:0F:33;pos=0.0,0.0,0.0;degree=0.0;00:14:bf:b1:97:8a=-38,2437000000,3;00:14:bf:b1:97:90=-52,2427000000,3;00:0f:a3:39:e1:c0=-54,2462000000,3;00:14:bf:b1:97:81=-64,2422000000,3;00:14:bf:3b:c7:c6=-68,2432000000,3;00:14:bf:b1:97:8d=-74,2442000000,3;00:0f:a3:39:dd:cd=-78,2412000000,3;00:0f:a3:39:e0:4b=-78,2462000000,3;00:0f:a3:39:e2:10=-83,2437000000,3;02:00:42:55:31:00=-84,2457000000,1;02:64:fb:68:52:e6=-87,2447000000,1"[] 
- []
-
-
-Overfull \hbox (1546.23912pt too wide) in paragraph at lines 235--235
-[]\T1/lmtt/m/n/10 [5] "t=1139643119538;id=00:02:2D:21:0F:33;pos=0.0,0.0,0.0;degree=0.0;00:14:bf:b1:97:8a=-46,2437000000,3;00:0f:a3:39:e1:c0=-55,2462000000,3;00:14:bf:b1:97:90=-57,2427000000,3;00:14:bf:3b:c7:c6=-67,2432000000,3;00:0f:a3:39:dd:cd=-66,2412000000,3;00:0f:a3:39:e0:4b=-80,2462000000,3;00:0f:a3:39:e2:10=-83,2437000000,3;00:14:bf:b1:97:81=-66,2422000000,3;02:00:42:55:31:00=-87,2457000000,1"[] 
- []
-
-
-Overfull \hbox (1729.98859pt too wide) in paragraph at lines 235--235
-[]\T1/lmtt/m/n/10 [6] "t=1139643119818;id=00:02:2D:21:0F:33;pos=0.0,0.0,0.0;degree=0.0;00:14:bf:b1:97:8a=-37,2437000000,3;00:0f:a3:39:e1:c0=-54,2462000000,3;00:14:bf:b1:97:81=-65,2422000000,3;00:14:bf:b1:97:8d=-67,2442000000,3;00:14:bf:3b:c7:c6=-67,2432000000,3;00:0f:a3:39:e0:4b=-79,2462000000,3;00:0f:a3:39:dd:cd=-67,2412000000,3;00:0f:a3:39:e2:10=-89,2437000000,3;02:00:42:55:31:00=-86,2457000000,1;02:64:fb:68:52:e6=-90,2447000000,1"[] 
- []
-
-<Data-Exploration_files/figure-latex/formatting_df-1.pdf, id=52, 436.63126pt x 253.94875pt>
-File: Data-Exploration_files/figure-latex/formatting_df-1.pdf Graphic file (type pdf)
-<use Data-Exploration_files/figure-latex/formatting_df-1.pdf>
-Package pdftex.def Info: Data-Exploration_files/figure-latex/formatting_df-1.pdf  used on input line 284.
+<Data-Exploration_files/figure-latex/posZ-1.pdf, id=57, 436.63126pt x 253.94875pt>
+File: Data-Exploration_files/figure-latex/posZ-1.pdf Graphic file (type pdf)
+<use Data-Exploration_files/figure-latex/posZ-1.pdf>
+Package pdftex.def Info: Data-Exploration_files/figure-latex/posZ-1.pdf  used on input line 314.
 (pdftex.def)             Requested size: 436.63019pt x 253.94812pt.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 291.
+(Font)              <5> on input line 321.
 [3]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 315.
+(Font)              <10> on input line 345.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 315.
-[4 <./Data-Exploration_files/figure-latex/formatting_df-1.pdf>]
-<Data-Exploration_files/figure-latex/unnamed-chunk-3-1.pdf, id=75, 440.64626pt x 284.06125pt>
-File: Data-Exploration_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (type pdf)
-<use Data-Exploration_files/figure-latex/unnamed-chunk-3-1.pdf>
-Package pdftex.def Info: Data-Exploration_files/figure-latex/unnamed-chunk-3-1.pdf  used on input line 362.
+(Font)              <7> on input line 345.
+[4 <./Data-Exploration_files/figure-latex/posZ-1.pdf>]
+<Data-Exploration_files/figure-latex/unnamed-chunk-4-1.pdf, id=80, 440.64626pt x 284.06125pt>
+File: Data-Exploration_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (type pdf)
+<use Data-Exploration_files/figure-latex/unnamed-chunk-4-1.pdf>
+Package pdftex.def Info: Data-Exploration_files/figure-latex/unnamed-chunk-4-1.pdf  used on input line 385.
 (pdftex.def)             Requested size: 440.66533pt x 284.07353pt.
-<Data-Exploration_files/figure-latex/unnamed-chunk-3-2.pdf, id=76, 440.64626pt x 284.06125pt>
-File: Data-Exploration_files/figure-latex/unnamed-chunk-3-2.pdf Graphic file (type pdf)
-<use Data-Exploration_files/figure-latex/unnamed-chunk-3-2.pdf>
-Package pdftex.def Info: Data-Exploration_files/figure-latex/unnamed-chunk-3-2.pdf  used on input line 363.
+<Data-Exploration_files/figure-latex/unnamed-chunk-4-2.pdf, id=81, 440.64626pt x 284.06125pt>
+File: Data-Exploration_files/figure-latex/unnamed-chunk-4-2.pdf Graphic file (type pdf)
+<use Data-Exploration_files/figure-latex/unnamed-chunk-4-2.pdf>
+Package pdftex.def Info: Data-Exploration_files/figure-latex/unnamed-chunk-4-2.pdf  used on input line 386.
 (pdftex.def)             Requested size: 440.66533pt x 284.07353pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 362--371
+Underfull \hbox (badness 10000) in paragraph at lines 385--394
 [][]
  []
 
-[5 <./Data-Exploration_files/figure-latex/unnamed-chunk-3-1.pdf> <./Data-Exploration_files/figure-latex/unnamed-chunk-3-2.pdf>] [6] (./Data-Exploration.aux)
+[5 <./Data-Exploration_files/figure-latex/unnamed-chunk-4-1.pdf> <./Data-Exploration_files/figure-latex/unnamed-chunk-4-2.pdf>] [6] (./Data-Exploration.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `Data-Exploration.out' has not changed.
-(rerunfilecheck)             Checksum: DC1996BC20EC2E8217576EB1B3B44E6D;953.
+(rerunfilecheck)             Checksum: 399E7598A9A2CB3A7173AEE1E7F68DB7;1103.
  ) 
 Here is how much of TeX's memory you used:
- 12349 strings out of 476928
- 196701 string characters out of 5824462
- 543893 words of memory out of 5000000
- 33329 multiletter control sequences out of 15000+600000
+ 12353 strings out of 476928
+ 196690 string characters out of 5824462
+ 545935 words of memory out of 5000000
+ 33331 multiletter control sequences out of 15000+600000
  515320 words of font info for 69 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,9n,77p,477b,580s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 72i,9n,77p,480b,580s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/tramanh/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/tramanh/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}</Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr5.pfb></Users/tramanh/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on Data-Exploration.pdf (6 pages, 311052 bytes).
+Output written on Data-Exploration.pdf (6 pages, 311524 bytes).
 PDF statistics:
- 141 PDF objects out of 1000 (max. 8388607)
- 108 compressed objects within 2 object streams
- 27 named destinations out of 1000 (max. 500000)
- 69 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 146 PDF objects out of 1000 (max. 8388607)
+ 113 compressed objects within 2 object streams
+ 29 named destinations out of 1000 (max. 500000)
+ 77 words of extra memory for PDF output out of 10000 (max. 10000000)
 
