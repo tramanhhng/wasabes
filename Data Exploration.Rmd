@@ -132,8 +132,7 @@ The clean data set contains the following variables:
 
 These variables were converted to their respective format. 
 
-*justify here why we excluded dertain things -> posZ, and type 3* -> can be justified with boxplot or whatever.
-
+As we continue to explore our variables and prepare them for analysis, we checked for data that should be omitted from the analysis. Here are some visualizations to help explain what we've found.
 
 ```{r}
 numeric_var = c("time","posX","posY","posZ","orientation","signal")
@@ -150,12 +149,28 @@ minposZ = min(OffLine$posY)
 
 posZdf = data.frame(meanposZ, maxposZ, minposZ)  
 kbl(posZdf) %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
-boxplot(OffLine$posZ)
+# Set up a more visually appealing boxplot
+boxplot(OffLine$posZ,
+        col = "skyblue", main = "Distribution of Z-axis Position", ylab = "Z-axis Position"
+)
+
+abline(h = mean(OffLine$posZ), col = "red", lwd = 2)
+legend("topright", legend = "Mean", col = "red", lwd = 2)
+par(mar = c(5, 4, 4, 2) + 0.1)
+grid()
+axis(1, cex.axis = 0.8)
+axis(2, cex.axis = 0.8)
+
 
 kbl(head(OffLine), caption = "Clean Data") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 
 #kbl(PC1_load, caption = "Loadings for PC1 (scaled)", col.names = c('Predictor', "Loading Value"))%>% kable_classic(full_width = F, html_font = "Cambria")
 ```
+
+Upon inspection of our z-position in this box-plot we see that all of our posZ data is recorded as being 0. This is due to the fact that all of the readings were taken on one floor of the building and as such this variable is adding no value to our analysis.
+
+**Should also look at scanMac as something to exclude**
+
 
 # 3. Data exploration
 ```{r}
