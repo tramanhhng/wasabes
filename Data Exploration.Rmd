@@ -176,6 +176,7 @@ Upon inspection of our z-position in this box-plot we see that all of our posZ d
 
 
 # 3. Data exploration
+If you remember, the observations for orientation were configured at intervals of 0 degrees, 45 degrees, 90 degrees, and so forth, resulting in more than eight values. To further examine the distribution of the 'orientation' variable, we will analyze it through an empirical cumulative distribution function (ECDF).
 ```{r}
 # Plot the orientation of the measurement device
 plot(ecdf(clean_offline$orientation))
