@@ -182,3 +182,4 @@ If you remember, the observations for orientation were configured at intervals o
 plot(ecdf(clean_offline$orientation))
 plot(ecdf(OffLine$orientation))
 ```
+From the plot, we observe a concentration of observations around 0, 45, 90 degrees, and so forth. However, there is evident dispersion in between, with instances like 47.5 degrees, 358.2 degrees, and so on. This diversity in values is not a drawback; in fact, it could be valuable in its current form. Alternatively, we could derive value by categorizing these values into bins to align with the original eight values. To implement this, we will develop a function.
