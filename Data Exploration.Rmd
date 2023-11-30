@@ -134,6 +134,8 @@ These variables were converted to their respective format.
 
 As we continue to explore our variables and prepare them for analysis, we checked for data that should be omitted from the analysis. Here are some visualizations to help explain what we've found.
 
+It would be beneficial to enhance the device's readability by replacing the numerical representation of 1 and 3. To achieve this, we can transform the variable into a factor with the categories "adhoc" and "access point." However, for the development and testing of our model, we will exclusively utilize the signal strengths measured at the fixed access points. Now equipped with this information, we will eliminate records related to adhoc measurements and exclude the 'type' variable from our data frame.
+
 ```{r}
 numeric_var = c("time","posX","posY","posZ","orientation","signal")
 clean_offline[numeric_var] = lapply(clean_offline[numeric_var],as.numeric)
