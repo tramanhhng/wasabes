@@ -14,6 +14,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = FALSE)
 library(kableExtra)
 library(tidyverse)
+library(here)
 ```
 
 # 1. Introduction - Data Description
@@ -25,7 +26,7 @@ The offline data was collected designing a 1 meter resolution grid, resulting in
 
 More details of the floor plan, and location of online and offline data can be seen in Figure 1.
 
-For simplicity, this report will share the results found in the offline dataset, but initial process of data cleaning can be directly applied to the online data as well. The online and offline data sets share the same structure so that's why in this document, we explore the offline data set with the expectation to apply the same method for the online data set.
+For simplicity, this report will share the results found in the offline dataset, but initial process of data cleaning can be directly applied to the online data as well. The online and offline data sets share the same structure, so we explore the offline data set with the expectation to apply the same method for the online data set.
 
 ```{r fig.align = "center", fig.cap= 'Flooplan location. Access points are squares. Grey dots are offline data locations and black dots are online data locations.'}
 knitr::include_graphics("data/floorplan.jpg")
@@ -164,13 +165,13 @@ We provide the structure of our data frame, along with the first 3 observations 
 clean_offline[1:3,]
 ```
 
-
 Before further exploring and analyzing the data, we conduct a simple assessment to convert variables into the correct useful types and formats. We performed the following operations:
 
 * We observe that some variables, such as `time`, `position`, `orientation`, `signal` and `channel`, should be converted to numerical for analysis.  
 
 * We now focus on the `time` variable. According documents provided by the client, time is expressed in milliseconds from midnight on January 1st, 1970. We convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. Additionally, we retain the more precise time information in 'rawTime' in case it becomes necessary for future analysis.
 
+* Based on the documents received from the client, a value of 1 for the variable `type` corresponds to ad-hoc devices. However, for the development and testing of the IPS, we will utilize only the signals measured at fixed access points. We removed all rows that have `type` = 1. This operation removes `r length(clean_offline) - length(OffLine)` observations, resulting in `r length(OffLine)` observations for all accesspoint devices. Now, since the variable `type` has a value of 3 for all observations, so we eliminate the variable `type` from the data set.
 
 Table 1 provides our formatted offline dataset.
 
@@ -184,67 +185,18 @@ clean_offline$rawtime = clean_offline$time
 clean_offline$time = clean_offline$time/1000
 class(clean_offline$time) = c("POSIXt","POSIXct")
 
+#Keep access point devices only
+OffLine = clean_offline[clean_offline$type == "3", ]
+OffLine = OffLine[, "type" != names(OffLine)]
+
 kbl(head(clean_offline), caption = "Clean Data with transformed variables", position="b") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 5)
 
 ```
 
-
-## 2.3 Data cleaning
-In this section, we perform operations to remove observations not intended for our model, as well as variables not needed for our analysis.
-
-### Access points
-
-**Access point types:** Based on the documents received from the client, a value of 1 for the variable `type` corresponds to ad-hoc devices. However, for the development and testing of the IPS, we will utilize only the signals measured at fixed access points. We removed all rows that have `type` = 1. This operation removes `r length(clean_offline) - length(OffLine)` observations, resulting in `r length(OffLine)` observations for all accesspoint devices. Now, since the variable `type` has a value of 3 for all observations, so we eliminate the variable `type` from the data set.
-
-```{r}
-#Keep access point devices only
-OffLine = clean_offline[clean_offline$type == "3", ]
-OffLine = OffLine[, "type" != names(OffLine)]
-```
-
-**Access point ID:** tally mac and filter for 6 access points the client provide
-
-**Access point location:** Add x y z of access point locations
-
-### Orientation of hand-held devices
-As provided by the client, the orientation of the hand-held device is supposed to be a set of exactly eight angles from 0 - 315 degrees in increments of 45 degrees. However, in practice, the measured orientations slightly deviate from these eight values. To further examine the distribution of the 'orientation' variable, we will analyze it through an empirical cumulative distribution function (ECDF).
-
-```{r orientation_plot}
-# Plot the orientation of the measurement device
-#plot(ecdf(clean_offline$orientation)) #clean_offline contains the adhoc device as well. Unless you have specific reasons here, I wouldn't display this one, only the plot below that works on OffLine.
-
-#Create the ecdf plot for the variable orientation
-plot(ecdf(OffLine$orientation),
-     main = "Distribution of the Orientation variable",
-     xlab = "Orientation",
-     ylab = "Cumulative probability",
-     xlim=c(0,360),
-     lab=c(8,11,5), #I tried to make the x-axis ticks appear at 0, 45, 90 but it didn't work
-     frame.plot=FALSE)
-
-```
-
-From the plot, we observe a concentration of observations around 0, 45, 90 degrees, and so forth. However, there is evident dispersion in between, with instances like 47.5 degrees, 358.2 degrees, and so on. There is also a value of 360, which should be converted to 0. As instructed by the client, we group the orientation values into bins from 0 - 315 in increments of 45.
-
-```{r orientation}
-
-#Develop and apply a function to convert orientation values
-convert_orient <- function(orientation) {
-  rec_orient <- round(orientation / 45) * 45
-  rec_orient <- ifelse(rec_orient == 360, 0, rec_orient)
-  return(rec_orient)
-}
-
-#Recode orientation values
-OffLine <- OffLine %>% 
- mutate(orientation=convert_orient(orientation))
-
-```
-
-### 
+# 3 Data exploration
+In this section, we explore the data and prepare it to be ready for model input.
 
 
-# 3. Data Exploration
 
 ```{r}
 #check numerical data
@@ -256,7 +208,11 @@ mean_off_p = as.data.frame(colMeans(mean_off))
 ```
 
 
-Table 2 provides a basic exploration of each variable and calculate the mean for the numerical variables (i.e., position, orientation, signal). We find that position-z, has a mean of zero. Further exploration shows that the variable has a value of zero for all the observations in the offline dataset. This seemingly anomalous value is due to the fact that all of the readings were taken on one floor of the building. We were tempted to delete the variable posZ; however, since it is a meaningful variable and we do not know, for now, if the online dataset has different posZ values, we will keep it for the current stage of our project.
+Table 2 provides a basic exploration of each variable and calculate the mean for the numerical variables (i.e., position, orientation, signal). 
+
+## Position
+We find that position-z, has a mean of zero. Further exploration shows that the variable has a value of zero for all the observations in the offline dataset. This seemingly anomalous value is due to the fact that all of the readings were taken on one floor of the building. We removed the posZ variable.
+
 
 ```{r posZ}
 #Let's keep posZ because it is a meaningful pos variable that could be in our model, and we don't know if the online dataset has other values for posZ.
@@ -292,6 +248,93 @@ kbl(mean_off_p, caption = "Mean values for numerical variables") %>% kable_class
 kbl(posZdf, caption = "Min, Max and Mean values for posZ") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 ```
 
+```{r}
+OffLine = subset(OffLine, select = -posZ)
+```
+
+
+## Orientation of hand-held devices
+As provided by the client, the orientation of the hand-held device is supposed to be a set of exactly eight angles from 0 - 315 degrees in increments of 45 degrees. However, in practice, the measured orientations slightly deviate from these eight values. To further examine the distribution of the 'orientation' variable, we will analyze it through an empirical cumulative distribution function (ECDF).
+
+```{r orientation_plot}
+# Plot the orientation of the measurement device
+#plot(ecdf(clean_offline$orientation)) #clean_offline contains the adhoc device as well. Unless you have specific reasons here, I wouldn't display this one, only the plot below that works on OffLine.
+
+#Create the ecdf plot for the variable orientation
+plot(ecdf(OffLine$orientation),
+     main = "Distribution of the Orientation variable",
+     xlab = "Orientation",
+     ylab = "Cumulative probability",
+     xlim=c(0,360),
+     lab=c(8,11,5), #I tried to make the x-axis ticks appear at 0, 45, 90 but it didn't work
+     frame.plot=FALSE)
+
+```
+
+From the plot, we observe a concentration of observations around 0, 45, 90 degrees, and so forth. However, there is evident dispersion in between, with instances like 47.5 degrees, 358.2 degrees, and so on. There is also a value of 360, which should be converted to 0. As instructed by the client, we group the orientation values into bins from 0 - 315 in increments of 45.
+
+```{r orientation}
+
+#Develop and apply a function to convert orientation values
+convert_orient <- function(orientation) {
+  rec_orient <- round(orientation / 45) * 45
+  rec_orient <- ifelse(rec_orient == 360, 0, rec_orient)
+  return(rec_orient)
+}
+
+#Recode orientation values
+OffLine <- OffLine %>% 
+ mutate(orientation=convert_orient(orientation))
+
+```
+
+## Access points
+
+The client provided a list of six access point locations. However, the data collected include `r length(unique(OffLine$mac))` access points. This problem arises from the scanning device catching signals from wifi routers on other floors and nearby. We tally the number of observations for each access point and found seven access points with significantly higher number of observations than other access points. From the information provided, we do not know why there is one extra access point, so we keep the top seven for now.
+
+```{r}
+#Tally mac and arrange in descending order
+OffLine %>% 
+  group_by(mac) %>%
+  summarize(observations =n()) %>%
+  arrange(desc(observations))
+
+#Filter out the mac addresses with the bottom five number of observations
+OffLine_7macs <- OffLine %>% filter(!(mac %in% c("00:0f:a3:39:e0:4b",
+                                                 "00:0f:a3:39:e2:10",
+                                                 "00:04:0e:5c:23:fc",
+                                                 "00:30:bd:f8:7f:c5",
+                                                 "00:e0:63:82:8b:a9") ))
+
+```
+
+To confirm the list of access points, we match them with the channel's frequency. Since each access point coordinates with only one channel, we do not need the `channel` variable for our model.
+
+```{r}
+#Find coordinating mac-channel
+OffLine_7macs %>% 
+  group_by(mac, channel) %>%
+  summarize ()
+
+#Dropping the channel variable in the data set
+OffLine_7macs = subset(OffLine_7macs, select = -channel)
+
+```
 
 
 # 4. Challenges 
+
+This section discusses challenges we encountered exploring the Indoor Positioning data.
+
+## Data formatting
+The data the client provided is not in a format ready for analysis. The data file had multiple characteristics that need significant re-formatting:
+
+* It is a text file with minimal formatting.
+
+* The data was not presented in a table format and variables are separated by multiple different separators.
+
+* Each line corresponds to multiple observations and the number of observations on each line is different.
+
+The data formatting process took significant amount of time and required us to learn new functions
+
+## Data exploration
