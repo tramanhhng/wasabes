@@ -16,23 +16,42 @@ library(kableExtra)
 library(tidyverse)
 ```
 
-# 1. Introduction - Data Description and Cleaning
+# 1. Introduction - Data Description
 
 Indoor position systems (IPS) development is an active area of research that can be used in numerous settings. Part of efforts to develop, calibration and model these systems are achieved through the use of WIFI signals. The following report, describes and characterizes a large data set compiled in a 15 by 36 meter area that contains six (wifi routers) access points, signal strength, various locations and orientation of the devices (10 parameters total)
-The data is subdivided in two sub-sets, one denominated "offline data", which corresponds to various testing devices connected to the network at different locations and orientations, and an "online data", where 60 locations and orientations of the devices were selected at random.
+The data is subdivided in two sub-sets, one denominated "offline data", which corresponds to various testing devices connected to the network at different locations and orientations, and the other an "online data", where 60 locations and orientations of the devices were selected at random.
 
 The offline data was collected designing a 1 meter resolution grid, resulting in 166 locations. In each of these locations, the device was oriented starting at 0 degrees inclination and at 45 degrees increments, and the strength signal measured. Furthermore, each combination of location/orientation was sampled 110 times. This grid sampling is intended to be used to calibrate a indoor positioning model. On the other hand, the online data was designed to simulate real-world data, in which locations are not bounded by the 1 meter grid used in the offline data, and were selected at random. This randomization included the orientation of the device and therefore, the online data consists of 60 randomly selected location/orientation combinations sampled 110 times. 
 
 More details of the floor plan, and location of online and offline data can be seen in Figure 1.
 
+For simplicity, this report will share the results found in the offline dataset, but initial process of data cleaning can be directly applied to the online data as well. The online and offline data sets share the same structure so that's why in this document, we explore the offline data set with the expectation to apply the same method for the online data set.
 
-For simplicity, this report will share the results found in the offline dataset, but initial process of data cleaning can be directly applied to the online data as well. 
+```{r echo=FALSE, fig.align = "center", fig.cap= 'Flooplan location. Access points are squares. Grey dots are offline data locations and black dots are online data locations.'}
+knitr::include_graphics("data/floorplan.jpg")
+```
 
 
-![Figure 1: Flooplan location. Access points are squares. Grey dots are offline data locations and black dots are online data locations.](data/floorplan.jpg)
-Noting that the online and offline data sets share the same structure, in this document, we explore the offline data set with the expectation to apply the same method for the online data set.
+Circles serve as markers for the positions where "offline" measurements were conducted, while black squares indicate the locations of six access points. These reference positions provide a calibration of signal strengths within the building, forming the basis for constructing a model to predict the whereabouts of a hand-held device when its location is unknown. The hand-held device supplies x and y coordinates, akin to latitude and longitude on a map, along with its orientation. Signal strengths are recorded at eight orientations in 45-degree intervals. For every location and orientation combination, 110 signal strength measurements were documented for each of the six access points.
 
-Circles serve as markers for the positions where "offline" measurements were conducted, while black squares indicate the locations of six access points. These reference positions provide a calibration of signal strengths within the building, forming the basis for constructing a model to predict the whereabouts of a hand-held device when its location is unknown. The hand-held device supplies x and y coordinates, akin to latitude and longitude on a map, along with its orientation. Signal strengths are recorded at eight orientations in 45-degree intervals. For every location and orientation combination, 110 signal strength measurements were documented for each of the six access points. In the analysis, various data setup approaches were considered, and a table detailing the variables in the dataset slated for analysis is provided below, with a brief overview to avoid delving into excessive detail.
+
+# 2. Variables Description
+
+## 2.1 Data Cleaning
+
+
+The data provided by the client, contains the following variables:
+
+*`time`: time in miliseconds
+*`scanMac`: IP address of the scanning device
+*`pos`: the 3-D coordination of the scanning device
+*`orientation`: the scanning device's orientation
+*`mac`: the IP address of the access points
+*`signal`: signal strength in dBm
+*`channel`: the channel frequency
+*`type`: type of device (access point = 3, device in adhoc mode =1)  
+
+As a first goal, prior to exploration, we organize and clean the dataset. In the analysis, various data setup approaches were considered, and a table detailing the variables in the dataset slated for analysis is provided below, with a brief overview to avoid delving into excessive detail.
 
 ```{r read_offline_data, echo = FALSE}
 
@@ -41,18 +60,18 @@ raw_offline = readLines("Data/offline.final.trace.txt")
 ```
 
 
-The format of the data is stored in a .txt file. Each location, and its subsequent 100 samples, are marked by the presence of a "#" symbol with three outputs.
-The text bellow depicts the first 6 rows found in the dataset, note how the first 3 entries are marked by the hash symbol. Separations between samples are delimitated by ",1". 
+The format of the data is stored in a .txt file. Each location, and its subsequent 100 samples, are marked by the presence of a "#" symbol with three outputs. Below, an example of a row found in the dataset after some basic cleaning. We observe some variables, such as position ("pos") and mac are further subdivided.
 
-```{r}
+```{r data_explanation, echo=FALSE, comment = ''}
 
-raw_offline[1:4]
-str(raw_offline) 
-head(raw_offline)
+raw_offline[1:3]
+toPrint = strsplit(raw_offline, "[;]")[[10]]
+head(toPrint)
 
+#kbl(toPrint, caption = "Raw Data Format") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 ```
 
-Upon further exploration, we created function to process the data into a suitable dataframe. We started by clean the rows with the "#" symbol. A total of **r length(raw_offline) - length(clean_offline)** were removed, resulting in **r length(clean_offline)** rows.Second, we utilize the semicolon as a separator for the different variables in each row, and then lately the [;=,] pattern found in the data to create matrices that store the observation and its corresponding measurements. We further subdivide the data to include the 10 target variables for the indoor positioning system. Lastly, we add the variable names to the clean dataframe. 
+Upon further exploration, we create a function to process the data into a suitable dataframe. We start by cleaning the rows with the "#" symbol. A total of 5313 rows are removed, resulting in 146,079 rows. Second, we utilize the semicolon as a separator for the different variables in each row, and account for the variables that were further subdivided (position and mac). Lastly, we add the variable names to the clean dataframe. 
 
 ```{r split_one_line, echo = FALSE,  eval = FALSE}
 
@@ -80,7 +99,7 @@ aaa = separator[c(2,4,6,7,8,10)] %>%
 cbind(aa,bb) %>% view()
 ```
 
-```{r clean_#_rows, echo = FALSE}
+```{r clean_#_rows, echo = FALSE, comment = ''}
 
 # The code below removes all rows that start with #
 #After this code, clean_offline has 146,080 rows, less than the original 151,392 rows
@@ -90,7 +109,7 @@ clean_offline = clean_offline[-3]
 #looking good
 #head(clean_offline)
 #We have rows! =)
-length(clean_offline)
+#length(clean_offline)
 
 clean_function = function(raw_data){
   #check first element of the 2d array created -> row of observation
@@ -110,34 +129,19 @@ clean_dataframe = lapply(clean_offline, clean_function)
 clean_offline = as.data.frame(do.call(rbind, clean_dataframe))
 #add names
 names(clean_offline) = c("time", "scanMac", "posX", "posY", "posZ", "orientation", "mac", "signal", "channel", "type")
-head(clean_offline)
-
-
+```
+```{r echo=FALSE}
+clean_offline[1:3,]
 ```
 
 
+## 2.2 Formatting
 
-# 2. Variables description
 
+Before further exploring and analysyng the data, we do a pre-exploration process, to assess if variables should be removed from the data set, and if conversions were required. We observe that some features would be beneficial to have as numerical variables (i.e., position, orientation and signal). Furthermore, we check the documents recieved by the client and determine that a value of 3 for the variable type, corresponds to ad-hoc devices. However, for the development and testing of the IPS, we will utilize only the signals measured at fixed access points and determine to eliminate the rows that have a type 3 value, and subsequently, eliminate the variable from the data set. 
+We now focus on the 'time' variable. According to the documentation, time is expressed in milliseconds from midnight on January 1st, 1970. We convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. Additionally, we retain the more precise time information in 'rawTime' in case it becomes necessary for future analysis.
 
-The clean data set contains the following variables:
-*`time`: time in miliseconds
-*`scanMac`: IP address of the scanning device
-*`pos`: the 3-D coordination of the scanning device
-*`orientation`: the scanning device's orientation
-*`mac`: the IP address of the access points
-*`signal`: signal strength in dBm
-*`channel`: the channel frequency
-*`type`: type of device (access point = 3, device in adhoc mode =1)  
-
-These variables were converted to their respective format. 
-
-As we continue to explore our variables and prepare them for analysis, we checked for data that should be omitted from the analysis. Here are some visualizations to help explain what we've found.
-
-It would be beneficial to enhance the device's readability by replacing the numerical representation of 1 and 3. To achieve this, we can transform the variable into a factor with the categories "adhoc" and "access point." However, for the development and testing of our model, we will exclusively utilize the signal strengths measured at the fixed access points. Now equipped with this information, we will eliminate records related to adhoc measurements and exclude the 'type' variable from our data frame.
-Now, let's focus on the 'time' variable. According to the documentation, time is expressed in milliseconds from midnight on January 1st, 1970. We can convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. Additionally, we'll retain the more precise time information in 'rawTime' in case it becomes necessary for future analysis.
-
-```{r}
+```{r formatting_df, echo = FALSE}
 numeric_var = c("time","posX","posY","posZ","orientation","signal")
 clean_offline[numeric_var] = lapply(clean_offline[numeric_var],as.numeric)
 OffLine = clean_offline[clean_offline$type == "3", ]
@@ -146,12 +150,20 @@ OffLine$rawtime = clean_offline$time
 OffLine$time = OffLine$time/1000
 class(OffLine$time) = c("POSIXt","POSIXct")
 
-meanposZ = mean(OffLine$posY)
-maxposZ = max(OffLine$posY)
-minposZ = min(OffLine$posY)
+#check numerical data
+mean_off = OffLine %>% select(posX, posY, posZ, orientation, signal)
+mean_off_p = as.data.frame(colMeans(mean_off))
 
+#kbl(mean_off_p, caption = "Mean values for numerical variables") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
+
+#Check min,max andmean vals for posZ
+meanposZ = mean(OffLine$posZ)
+maxposZ = max(OffLine$posZ)
+minposZ = min(OffLine$posZ)
+#plot min,max, mean vals for posZ
 posZdf = data.frame(meanposZ, maxposZ, minposZ)  
-kbl(posZdf) %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
+#kbl(posZdf, caption = "Min, Max and Mean values for posZ") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
+
 # Set up a more visually appealing boxplot
 boxplot(OffLine$posZ,
         col = "skyblue", main = "Distribution of Z-axis Position", ylab = "Z-axis Position"
@@ -163,23 +175,29 @@ par(mar = c(5, 4, 4, 2) + 0.1)
 grid()
 axis(1, cex.axis = 0.8)
 axis(2, cex.axis = 0.8)
-
-
-kbl(head(OffLine), caption = "Clean Data") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
-
-#kbl(PC1_load, caption = "Loadings for PC1 (scaled)", col.names = c('Predictor', "Loading Value"))%>% kable_classic(full_width = F, html_font = "Cambria")
 ```
 
-Upon inspection of our z-position in this box-plot we see that all of our posZ data is recorded as being 0. This is due to the fact that all of the readings were taken on one floor of the building and as such this variable is adding no value to our analysis.
+```{r echo=FALSE}
+kbl(head(OffLine), caption = "Clean Data with transformed variables") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 5)
 
-**Should also look at scanMac as something to exclude**
+kbl(mean_off_p, caption = "Mean values for numerical variables") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
+
+kbl(posZdf, caption = "Min, Max and Mean values for posZ") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
+```
+
+We conduct a basic exploration of each variable and calculate the mean for the numerical variables (i.e., position, orientation, signal) and find that position-z, has a mean of zero. Further exploration shows that the variable has a value of zero for all the data, so decide to remove it. This, seemingly anomalous value, is due to the fact that all of the readings were taken on one floor of the building.
+
 
 
 # 3. Data exploration
+
 If you remember, the observations for orientation were configured at intervals of 0 degrees, 45 degrees, 90 degrees, and so forth, resulting in more than eight values. To further examine the distribution of the 'orientation' variable, we will analyze it through an empirical cumulative distribution function (ECDF).
+
 ```{r}
 # Plot the orientation of the measurement device
 plot(ecdf(clean_offline$orientation))
 plot(ecdf(OffLine$orientation))
 ```
 From the plot, we observe a concentration of observations around 0, 45, 90 degrees, and so forth. However, there is evident dispersion in between, with instances like 47.5 degrees, 358.2 degrees, and so on. This diversity in values is not a drawback; in fact, it could be valuable in its current form. Alternatively, we could derive value by categorizing these values into bins to align with the original eight values. To implement this, we will develop a function.
+
+# 4. Challenges 
