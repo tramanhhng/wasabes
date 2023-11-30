@@ -11,7 +11,7 @@ output: pdf_document
 4. Discuss any challenges you encountered, and ways by which you handled these.
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 library(kableExtra)
 library(tidyverse)
 ```
@@ -27,7 +27,7 @@ More details of the floor plan, and location of online and offline data can be s
 
 For simplicity, this report will share the results found in the offline dataset, but initial process of data cleaning can be directly applied to the online data as well. The online and offline data sets share the same structure so that's why in this document, we explore the offline data set with the expectation to apply the same method for the online data set.
 
-```{r echo=FALSE, fig.align = "center", fig.cap= 'Flooplan location. Access points are squares. Grey dots are offline data locations and black dots are online data locations.'}
+```{r fig.align = "center", fig.cap= 'Flooplan location. Access points are squares. Grey dots are offline data locations and black dots are online data locations.'}
 knitr::include_graphics("data/floorplan.jpg")
 ```
 
@@ -37,23 +37,30 @@ Circles serve as markers for the positions where "offline" measurements were con
 
 # 2. Variables Description
 
-## 2.1 Data Cleaning
+## 2.1 Data Formatting
 
 
 The data provided by the client, contains the following variables:
 
-*`time`: time in miliseconds
-*`scanMac`: IP address of the scanning device
-*`pos`: the 3-D coordination of the scanning device
-*`orientation`: the scanning device's orientation
-*`mac`: the IP address of the access points
-*`signal`: signal strength in dBm
-*`channel`: the channel frequency
-*`type`: type of device (access point = 3, device in adhoc mode =1)  
+* `time`: time in miliseconds. 
+
+* `scanMac`: IP address of the scanning device. 
+
+* `pos`: the 3-D coordination of the scanning device. 
+
+* `orientation`: the scanning device's orientation. 
+
+* `mac`: the IP address of the access points. 
+
+* `signal`: signal strength in dBm. 
+
+* `channel`: the channel frequency. 
+
+* `type`: type of device (access point = 3, device in adhoc mode =1)  
 
 As a first goal, prior to exploration, we organize and clean the dataset. In the analysis, various data setup approaches were considered, and a table detailing the variables in the dataset slated for analysis is provided below, with a brief overview to avoid delving into excessive detail.
 
-```{r read_offline_data, echo = FALSE}
+```{r read_offline_data}
 
 #Read the offline data txt file, with each row in the txt file becoming a text string
 raw_offline = readLines("Data/offline.final.trace.txt")
@@ -62,7 +69,7 @@ raw_offline = readLines("Data/offline.final.trace.txt")
 
 The format of the data is stored in a .txt file. Each location, and its subsequent 100 samples, are marked by the presence of a "#" symbol with three outputs. Below, an example of a row found in the dataset after some basic cleaning. We observe some variables, such as position ("pos") and mac are further subdivided.
 
-```{r data_explanation, echo=FALSE, comment = ''}
+```{r data_explanation, comment = ''}
 
 raw_offline[1:3]
 toPrint = strsplit(raw_offline, "[;]")[[10]]
@@ -71,9 +78,15 @@ head(toPrint)
 #kbl(toPrint, caption = "Raw Data Format") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 ```
 
-Upon further exploration, we create a function to process the data into a suitable dataframe. We start by cleaning the rows with the "#" symbol. A total of 5313 rows are removed, resulting in 146,079 rows. Second, we utilize the semicolon as a separator for the different variables in each row, and account for the variables that were further subdivided (position and mac). Lastly, we add the variable names to the clean dataframe. 
+Upon further exploration, we create a function to process the data into a suitable dataframe.   
 
-```{r split_one_line, echo = FALSE,  eval = FALSE}
+* We start by cleaning the rows with the "#" symbol. A total of 5313 rows are removed, resulting in 146,079 rows.  
+
+* Second, we utilize semicolon, colon, and equal sign as separators for the different variables in each row and re-format the data so each row represents an observation of the variable signal strength.  
+
+* Lastly, we bind all rows together to create a dataframe and enter the proper names for each variable.  
+
+```{r split_one_line, eval = FALSE}
 
 #Exploration, do not run or eval for the document!
 
@@ -104,8 +117,9 @@ cbind(aa,bb) %>% view()
 # The code below removes all rows that start with #
 #After this code, clean_offline has 146,080 rows, less than the original 151,392 rows
 clean_offline <- raw_offline[substr(raw_offline,start=1, stop=1) != "#"]
+
 #remove top rows 
-clean_offline = clean_offline[-3]
+#clean_offline = clean_offline[-3] #?why delete row 3?
 #looking good
 #head(clean_offline)
 #We have rows! =)
@@ -130,19 +144,30 @@ clean_offline = as.data.frame(do.call(rbind, clean_dataframe))
 #add names
 names(clean_offline) = c("time", "scanMac", "posX", "posY", "posZ", "orientation", "mac", "signal", "channel", "type")
 ```
-```{r echo=FALSE}
+
+We provide the structure of our data frame, along with the first 3 observations below.
+
+```{r}
 clean_offline[1:3,]
 ```
 
 
-## 2.2 Formatting
+## 2.2 Data Cleaning
 
 
-Before further exploring and analysyng the data, we do a pre-exploration process, to assess if variables should be removed from the data set, and if conversions were required. We observe that some features would be beneficial to have as numerical variables (i.e., position, orientation and signal). Furthermore, we check the documents recieved by the client and determine that a value of 3 for the variable type, corresponds to ad-hoc devices. However, for the development and testing of the IPS, we will utilize only the signals measured at fixed access points and determine to eliminate the rows that have a type 3 value, and subsequently, eliminate the variable from the data set. 
-We now focus on the 'time' variable. According to the documentation, time is expressed in milliseconds from midnight on January 1st, 1970. We convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. Additionally, we retain the more precise time information in 'rawTime' in case it becomes necessary for future analysis.
+Before further exploring and analyzing the data, we do a pre-exploration process, to assess if variables should be removed from the data set, and if conversions were required. The list below presents the operations we performed:
+
+* We observe that some variables, such as `time`, `position`, `orientation`, `signal` and `channel`, should be converted to numerical for analysis.  
+
+* Based on the documents received from the client, a value of 1 for the variable `type` corresponds to ad-hoc devices. However, for the development and testing of the IPS, we will utilize only the signals measured at fixed access points. We removed all rows that have `type` = 1. After this removal, the variable `type` has a value of 3 for all observations, so we eliminate the variable `type` from the data set. 
+
+* We now focus on the `time` variable. According documents provided by the client, time is expressed in milliseconds from midnight on January 1st, 1970. We convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. Additionally, we retain the more precise time information in 'rawTime' in case it becomes necessary for future analysis.
+
+Table 1 provides our cleaned and formatted offline dataset.
 
 ```{r formatting_df, echo = FALSE}
-numeric_var = c("time","posX","posY","posZ","orientation","signal")
+
+numeric_var = c("time","posX","posY","posZ","orientation","signal", "channel")
 clean_offline[numeric_var] = lapply(clean_offline[numeric_var],as.numeric)
 OffLine = clean_offline[clean_offline$type == "3", ]
 OffLine = clean_offline[, "type" != names(clean_offline)]
@@ -177,7 +202,7 @@ axis(1, cex.axis = 0.8)
 axis(2, cex.axis = 0.8)
 ```
 
-```{r echo=FALSE}
+```{r table, echo=FALSE}
 kbl(head(OffLine), caption = "Clean Data with transformed variables") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 5)
 
 kbl(mean_off_p, caption = "Mean values for numerical variables") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
