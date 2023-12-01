@@ -46,7 +46,7 @@ In this section, we provide a brief description of steps undertaken to format an
 
 According to documents provided by the client, the data contains the following variables:
 
-* `time`: time in miliseconds. 
+* `time`: time in miliseconds since midnight 01/01/1970 UTC
 
 * `scanMac`: IP address of the scanning device. 
 
@@ -95,13 +95,13 @@ head(toPrint)
 #kbl(toPrint, caption = "Raw Data Format") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 ```
 
-Since the model is supposed to rely on wifi signal strength to predict device location, we format the data so each observation corresponds to one `signal` value. We do this by performing the following operations:
+Since the model is supposed to rely on wifi signal strength to predict device location, we organized the data so each observation corresponds to one `signal` value by performing the following operations:
  
-* First, we remove the rows with the "#" symbol that mark the beggining of a location sampling/orientation sample. As a result, a total of 5312 rows are removed, resulting in 146,080 rows.  
+* First, we removed the rows with the "#" symbol that mark the beginning of a location sampling/orientation sample. As a result, a total of 5312 rows were removed, resulting in 146,080 rows.  
 
-* Second, we utilize semicolon, colon, and equal sign as separators for the different variables in each row and re-format the data so each row represents an observation of the variable signal strength.  
+* Second, we utilized semicolon, colon, and equal sign, as separators for the different variables in each row and re-formatted the data so each row represents an observation of the variable signal strength.  
 
-* Lastly, we bind all rows together to create a dataframe and enter the proper names for each variable.  
+* Lastly, we binded all rows together to create a data frame. Subsequently, we entered the proper names for each variable.  
 
 A sample of the first 3 rows is depicted below. 
 
@@ -167,48 +167,50 @@ We provide the structure of our data frame, along with the first 3 observations 
 clean_offline[1:3,]
 ```
 
-Before further exploring and analyzing the data, we conduct a simple assessment to convert variables into the correct types. We perform the following operations:
+Before further exploring and analyzing the data, we conducted a simple assessment to convert variables into the correct types defined in thedocumentation provided by the client. We performed the following operations:
 
-* We observe that some variables, such as `time`, `position`, `orientation`, `signal` and `channel`, should be converted to numerical for analysis.  
+* We converted the variables `time`, `position`, `orientation`, `signal` and `channel`, to numerical values.
 
-* We now focus on the `time` variable. According documents provided by the client, time is expressed in milliseconds from midnight on January 1st, 1970. We convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. Additionally, we retain the more precise time information in `rawTime` in case it becomes necessary for future analysis.
+* We then transformed the `time` variable. According documents provided by the client, time is expressed in milliseconds from midnight on January 1st, 1970. We convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. We retained the more precise time information in `rawTime` in case it becomes necessary for future analysis.
+
+* Based on the documents received from the client, a value of 1 for the variable `type` corresponds to ad-hoc devices. However, for the development and testing of the IPS, we will utilize only the signals measured at fixed access points. We removed all rows that have `type = 1`. This operation removed 203,185 observations, resulting in a new data set of 978,443 observations for all access point devices. We then eliminate the `type` variable (now equal to 3 in the entire data set).
+
+A sample of the formatted data set can be seen in Table 1.
 
 
 ```{r formatting_df, echo = FALSE}
 #Turn some variables into numeric
 numeric_var = c("time","posX","posY","posZ","orientation","signal", "channel")
-clean_offline[numeric_var] = lapply(clean_offline[numeric_var],as.numeric)
 
-#Add the raw time column for record keeping, turn the time column into seconds and formatted in y-m-d time.
+clean_offline = clean_offline %>% mutate_at(c("time", "posX","posY", "posZ", "orientation", 'signal', 
+                                        "channel", 'time'), as.numeric)
+#Run this chunk only once, because else the dataframe will further divide time and the resulting variable will be a date in 1970
+
 clean_offline$rawtime = clean_offline$time
-clean_offline$time = clean_offline$time/1000
-class(clean_offline$time) = c("POSIXt","POSIXct")
+
+#transitional df to prevent bugs
+time_df = clean_offline  %>% mutate(time = time/1000)  %>% mutate(time = as.POSIXct(time, origin = '1970-01-01'))
+
 
 #Keep access point devices only
-OffLine = clean_offline[clean_offline$type == "3", ]
+OffLine = time_df[time_df$type == "3", ]
 OffLine = OffLine[, "type" != names(OffLine)]
 
-kbl(head(clean_offline), caption = "Clean Data with transformed variables", position="b") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 5)
-
+kbl(head(OffLine), caption = "Data with transformed variables", position="b") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 8)
 
 ```
 
-* Based on the documents received from the client, a value of 1 for the variable `type` corresponds to ad-hoc devices. However, for the development and testing of the IPS, we will utilize only the signals measured at fixed access points. We removed all rows that have `type = 1`. This operation removes `length(clean_offline$time) - length(OffLine$time)` observations, resulting in `length(OffLine$time)` observations for all access point devices. Now, since the variable `type` has a value of 3 for all observations, so we eliminate the variable `type` from the data set.
-
-Table 1 provides our formatted offline dataset.
-
 
 # 3 Data exploration
-In this section, we explore the data and prepare it to be ready for model input.
 
-
+This section focus on the exploration of the data itself. 
 
 ```{r}
 #check numerical data
 mean_off = OffLine %>% select(posX, posY, posZ, orientation, signal)
-mean_off_p = as.data.frame(colMeans(mean_off))
+mean_off_p = colMeans(mean_off)
 
-#kbl(mean_off_p, caption = "Mean values for numerical variables") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
+kbl(mean_off_p, caption = "Numerical variables mean", col.names = "Mean") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 
 ```
 
