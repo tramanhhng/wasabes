@@ -243,16 +243,13 @@ posZdf = data.frame(meanposZ, maxposZ, minposZ)
 #kbl(posZdf, caption = "Min, Max and Mean values for posZ") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 
 # Set up a more visually appealing boxplot
-boxplot(OffLine$posZ,
-        col = "skyblue", main = "Distribution of Z-axis Position", ylab = "Z-axis Position"
-)
-
+boxplot(OffLine$posZ, col = "skyblue", main = "Distribution of Z-axis Position", ylab = "Z-axis Position")
 abline(h = mean(OffLine$posZ), col = "red", lwd = 2)
 legend("topright", legend = "Mean", col = "red", lwd = 2)
-par(mar = c(5, 4, 4, 2) + 0.1)
-grid()
-axis(1, cex.axis = 0.8)
-axis(2, cex.axis = 0.8)
+# par(mar = c(5, 4, 4, 2) + 0.1)
+# grid()
+# axis(1, cex.axis = 0.8)
+# axis(2, cex.axis = 0.8)
 ```
 
 
@@ -272,7 +269,7 @@ OffLine = subset(OffLine, select = -posZ)
 
 ## Orientation of hand-held devices
 
-As provided by the client, the orientation of the hand-held device going in increaments of 45 degrees. We plotted 
+As provided by the client, the orientation of the hand-held device going in increments of 45 degrees. We plotted 
 supposed to be a set of exactly eight angles from 0 - 315 degrees in increments of 45 degrees. However, in practice, the measured orientations slightly deviate from these eight values. To further examine the distribution of the 'orientation' variable, we will analyze it through an empirical cumulative distribution function (ECDF).
 
 ```{r orientation_plot, echo = FALSE, message= FALSE}
@@ -347,7 +344,7 @@ mod_OffLine = macIPS %>% left_join(mac_locs, by = c("mac"="Macs")) %>% rename("m
                                                                                "posX" = posX.x,
                                                                                "posY" = posY.x)
 ```
-```{r echo = FALSE, message= FALSE}
+```{r echo = FALSE, message= FALSE, eval = FALSE}
 mod_OffLine
 ```
 
@@ -356,33 +353,38 @@ To confirm the list of access points, we match them with the channel's frequency
 
 ```{r echo = FALSE, message= FALSE}
 #Find coordinating mac-channel
-mod_OffLine %>% 
-  group_by(mac, channel) %>%
-  summarize ()
+
+vis1 = mod_OffLine %>% group_by(mac, channel) %>% summarize ()
+as.data.frame(vis1)
 
 #Dropping the channel variable in the data set
 mod_OffLine = subset(mod_OffLine, select = -channel)
 
+kbl(vis1, caption = "Grouped MAC addresses and corresponding channel", col.names = c("MAC ID", "Channel")) %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 ```
 
-The heatmap of position x, position y and number of observations is depicted bellow. We observe that the observations are not equally distributed.  We confirm that the locations overlap with the floormap.
-```{r}
-mod_OffLine %>% ggplot(aes(posX, posY)) + geom_bin_2d() + labs(title="Heatmap of Observations by Location", x="x-coordinate", y="y-coordinate") + scale_fill_gradient() + theme_minimal()
-  
-#   geom_count() + labs(title="Location map of access points and handheld devices",x="x-coordinate",y="y-coordinate")
-# 
-# toPlot2
+## Visualization
 
+We first explored the relationship between number of measurements and position in the floor plan.
+Figure 2 depicts the relationship between position on the x,y axis and the number of observations. We observe that the observations are not equally distributed. It's possible that part of the information in the sample was tainted by significant noise that was subsequently removed by the exploration process.  Additionally, we plot the locations on the floor map, and confirm they overlap (Fig 4). 
+
+```{r obs_loc_plot, echo = FALSE, fig.align = "center", fig.cap= 'Heat map of strength signal samples by location', out.width="100%", out.height="100%"}
+
+mod_OffLine %>% ggplot(aes(posX, posY)) + geom_bin2d(bins=10) + labs(title="Heatmap of Observations by Location", x="x-coordinate", y="y-coordinate") + theme_minimal()
+
+
+#scale_fill_continuous(type = "viridis")
 ```
-
-```{r fig.align = "center", fig.cap= 'Flooplan location and offline data location. We see the data cleaning was sucessful in eliminating unwanted variables while preserving the geographical information', out.width="50%"}
+```{r fig.align = "center", fig.cap= 'Flooplan location and offline data location. We see the data cleaning was sucessful in eliminating unwanted variables while preserving the geographical information', out.width="100%", out.height="100%"}
 
 knitr::include_graphics("floorplan_overlap.jpg")
 
 #Ideally the figure should be bigger!
 ```
 
-```{r summary_by_combo}
+We analyzed the possibility of certain locations on the map having a higher median signal strength, to assess potential bias. We note that the orientation angle doesn't not seem to be correlated with signal strength, but position does have an effect on the observed median strength. This is because of the geographical distribution of the access points (wifi router) across the area sampled. Naturally, the strength signal will decrease as the device moves away from the router. The limitation of the plot (2D) do not allow to examine the variability on the distribution on the x-axis.
+
+```{r summary_by_combo, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Heat map of strength signal grouped by orientation ', out.width="100%", out.height="100%"}
 # Group and summarize the data to obtain median, mean, and standard deviation for signal strength
 summary_data = mod_OffLine %>%
   group_by(posX, posY, orientation, mac) %>%
@@ -392,7 +394,42 @@ summary_data = mod_OffLine %>%
     sd_signal = sd(signal)
   )
 
+heatmap_plot = ggplot(summary_data, aes(x = orientation, y = as.factor(posY))) +
+  geom_tile(aes(fill = median_signal), color = "white") +
+  labs(title = "Signal Strength Heatmap grouped by Orientation vs. Location",
+       x = "Orientation Angle",
+       y = "Location",
+       fill = "Median Signal Strength")
 
+heatmap_plot
+```
+
+To explore further the distribution of signal strength in the data, we created several boxplots. We start by grouping them by `mac` and unique position x, and position y combinations. The objective is to analyze if certain location on the area sampled have anomalous signals, and how they compare to other access points. The results are depicted in Figure 5. We note that some of this variability might be explain because of the distances to the access points. This information will become important to further create the indoor positioning model. 
+
+```{r heatmap2, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Heat map of strength signal grouped by orientation ', out.width="150%", out.height="150%", warning=FALSE, message =FALSE}
+
+#create a loc, coordinates
+library(MASS) 
+library(reshape2) 
+library(reshape) 
+
+new_combIPS = mod_OffLine[, -1]
+new_combIPS = new_combIPS %>% mutate(location = Map(c, posX, posY))
+
+
+#ggplot(new_combIPS, aes(x = posX, y = signal, group_by=factor(posY))) + geom_boxplot() + facet_grid(mac~grouped_orient)
+
+ggplot(new_combIPS, aes(x = posX, y = signal, group=posY)) + geom_boxplot(width =25, lwd=0.5, outlier.colour = 'black', alpha = 0.4)  + facet_grid(mac~orientation) + theme_bw(base_size=5) + theme(axis.text.x=element_text(angle = 90, hjust = 1, vjust = 1, size = 4)) + scale_x_continuous(n.breaks = 15) +xlab('locations')
+
+```
+```{r}
+
+ggplot(mod_OffLine, aes(x= orientation, y= signal, group_by= mac)) + geom_boxplot() + facet_wrap(~mac)
+
+#+ facet_grid(mac~orientation)
+
+#e
+# ggplot(new_combIPS, aes(x = posX, y = signal, group=posY)) + geom_boxplot(width =25, lwd=0.5, outlier.colour = 'black', alpha = 0.4)  + facet_grid(mac~orientation) + theme_bw(base_size=5) + theme(axis.text.x=element_text(angle = 90, hjust = 1, vjust = 1, size = 4)) + scale_x_continuous(n.breaks = 15) +xlab('locations')
 ```
 
 # 4. Challenges 
