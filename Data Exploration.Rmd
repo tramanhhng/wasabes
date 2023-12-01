@@ -406,6 +406,7 @@ heatmap_plot
 
 To explore further the distribution of signal strength in the data, we created several boxplots. We start by grouping them by `mac` and unique position x, and position y combinations. The objective is to analyze if certain location on the area sampled have anomalous signals, and how they compare to other access points. The results are depicted in Figure 5. We note that some of this variability might be explain because of the distances to the access points. This information will become important to further create the indoor positioning model. 
 
+
 ```{r heatmap2, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Heat map of strength signal grouped by orientation ', out.width="150%", out.height="150%", warning=FALSE, message =FALSE}
 
 #create a loc, coordinates
@@ -424,7 +425,7 @@ ggplot(new_combIPS, aes(x = posX, y = signal, group=posY)) + geom_boxplot(width 
 ```
 ```{r or_sigboxplots, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Boxplots for Signal and Orientation grouped by Access Point ', out.width="100%", out.height="100%", warning=FALSE, message =FALSE}
 
-ggplot(mod_OffLine, aes(x= orientation, y= signal, group_by= orientation)) + geom_boxplot(aes(group=orientation)) + facet_wrap(~mac) + theme_minimal()
+ggplot(mod_OffLine, aes(x= orientation, y= signal, group_by= orientation, fill = orientation)) + geom_boxplot(aes(group=orientation), ) + facet_wrap(~mac) + theme_minimal()
 
 #+ facet_grid(mac~orientation)
 
