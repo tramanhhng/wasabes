@@ -367,3 +367,6 @@ The data the client provided is not in a format ready for analysis. The data fil
 The data formatting process took significant amount of time and required us to learn new functions
 
 ## Data exploration
+* There are different counts between MAC addresses and channels. From the txt file, we realized that there are extra access points that are not included in the testing area. 
+
+* We found that there is a one to one relationship between MAC address and channel for the seven devices. We had to delete channel from the 'offline' data set.
