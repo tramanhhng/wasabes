@@ -407,7 +407,6 @@ heatmap_plot
 To explore further the distribution of signal strength in the data, we created several boxplots. We start by grouping them by `mac` and unique position x, and position y combinations. The objective is to analyze if certain location on the area sampled have anomalous signals, and how they compare to other access points. The results are depicted in Figure 5. We note that some of this variability might be explain because of the distances to the access points. This information will become important to further create the indoor positioning model. 
 
 
-
 ```{r heatmap2, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Heat map of strength signal grouped by orientation ', out.width="150%", out.height="150%", warning=FALSE, message =FALSE}
 
 #create a loc, coordinates
@@ -421,12 +420,14 @@ new_combIPS = new_combIPS %>% mutate(location = Map(c, posX, posY))
 
 #ggplot(new_combIPS, aes(x = posX, y = signal, group_by=factor(posY))) + geom_boxplot() + facet_grid(mac~grouped_orient)
 
-ggplot(new_combIPS, aes(x = posX, y = signal, group=posY)) + geom_boxplot(width =25, lwd=0.5, outlier.colour = 'black', alpha = 0.4)  + facet_grid(mac~orientation) + theme_bw(base_size=5) + theme(axis.text.x=element_text(angle = 90, hjust = 1, vjust = 1, size = 4)) + scale_x_continuous(n.breaks = 15) +xlab('locations')
+ggplot(new_combIPS, aes(x = posX, y = signal, group=posY)) + geom_boxplot(width =25, lwd=0.5, outlier.colour = 'black', alpha = 0.4)  + facet_grid(mac~orientation) + theme_bw(base_size=5) + theme(axis.text.x=element_text(angle = 90, hjust = 1, vjust = 1, size = 4)) + scale_x_continuous(n.breaks = 15) +xlab('locations') + ggtitle("Signal strength by location and orientation")
 
 ```
+
+
 ```{r or_sigboxplots, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Boxplots for Signal and Orientation grouped by Access Point ', out.width="100%", out.height="100%", warning=FALSE, message =FALSE}
 
-ggplot(mod_OffLine, aes(x= orientation, y= signal, group_by= orientation, fill = orientation)) + geom_boxplot(aes(group=orientation), ) + facet_wrap(~mac)
+ggplot(mod_OffLine, aes(x= orientation, y= signal, group_by= orientation, fill = orientation)) + geom_boxplot(aes(group=orientation), ) + facet_wrap(~mac) + ggtitle("Signal strength by orientation, grouped by access point") + theme(legend.position="none")
 
 ```
 
