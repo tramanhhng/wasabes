@@ -28,7 +28,7 @@ More details of the floor plan, and location of online and offline data can be s
 
 For simplicity, this report will share the results found in the offline dataset, but initial process of data cleaning can be directly applied to the online data as well. The online and offline data sets share the same structure, so we explore the offline data set with the expectation to apply the same method for the online data set.
 
-```{r fig.align = "center", fig.cap= 'Flooplan location. Access points are squares. Grey dots are offline data locations and black dots are online data locations.'}
+```{r fig.align = "center", fig.cap= 'Flooplan location. Access points are squares. Grey dots are offline data locations and black dots are online data locations.', out.width="100%", out.height="100%"}
 
 knitr::include_graphics("data/floorplan.jpg")
 
@@ -242,10 +242,10 @@ minposZ = min(OffLine$posZ)
 posZdf = data.frame(meanposZ, maxposZ, minposZ)  
 #kbl(posZdf, caption = "Min, Max and Mean values for posZ") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 
-# Set up a more visually appealing boxplot
-boxplot(OffLine$posZ, col = "skyblue", main = "Distribution of Z-axis Position", ylab = "Z-axis Position")
-abline(h = mean(OffLine$posZ), col = "red", lwd = 2)
-legend("topright", legend = "Mean", col = "red", lwd = 2)
+# # Set up a more visually appealing boxplot
+# boxplot(OffLine$posZ, col = "skyblue", main = "Distribution of Z-axis Position", ylab = "Z-axis Position")
+# abline(h = mean(OffLine$posZ), col = "red", lwd = 2)
+# legend("topright", legend = "Mean", col = "red", lwd = 2)
 # par(mar = c(5, 4, 4, 2) + 0.1)
 # grid()
 # axis(1, cex.axis = 0.8)
@@ -345,20 +345,21 @@ mod_OffLine = macIPS %>% left_join(mac_locs, by = c("mac"="Macs")) %>% rename("m
                                                                                "posY" = posY.x)
 ```
 ```{r echo = FALSE, message= FALSE, eval = FALSE}
-mod_OffLine
+#mod_OffLine
 ```
 
 To confirm the list of access points, we match them with the channel's frequency. Since each access point coordinates with only one channel, we do not need the `channel` variable for our model.
 
 
-```{r echo = FALSE, message= FALSE}
+```{r echo = FALSE, message= FALSE, results = "hide"}
 #Find coordinating mac-channel
 
 vis1 = mod_OffLine %>% group_by(mac, channel) %>% summarize ()
-as.data.frame(vis1)
-
 #Dropping the channel variable in the data set
 mod_OffLine = subset(mod_OffLine, select = -channel)
+```
+
+```{r}
 
 kbl(vis1, caption = "Grouped MAC addresses and corresponding channel", col.names = c("MAC ID", "Channel")) %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 ```
@@ -366,7 +367,7 @@ kbl(vis1, caption = "Grouped MAC addresses and corresponding channel", col.names
 ## Visualization
 
 We first explored the relationship between number of measurements and position in the floor plan.
-Figure 2 depicts the relationship between position on the x,y axis and the number of observations. We observe that the observations are not equally distributed. It's possible that part of the information in the sample was tainted by significant noise that was subsequently removed by the exploration process.  Additionally, we plot the locations on the floor map, and confirm they overlap (Fig 4). 
+Figure 2 depicts the relationship between position on the x,y axis and the number of observations. We observe that the observations are not equally distributed. It's possible that part of the information in the sample was tainted by significant noise that was subsequently removed by the exploration process.  Additionally, we plot the locations on the floor map, and confirm they overlap (Fig 3). 
 
 ```{r obs_loc_plot, echo = FALSE, fig.align = "center", fig.cap= 'Heat map of strength signal samples by location', out.width="100%", out.height="100%"}
 
@@ -382,7 +383,7 @@ knitr::include_graphics("floorplan_overlap.jpg")
 #Ideally the figure should be bigger!
 ```
 
-We analyzed the possibility of certain locations on the map having a higher median signal strength, to assess potential bias. We note that the orientation angle doesn't not seem to be correlated with signal strength, but position does have an effect on the observed median strength. This is because of the geographical distribution of the access points (wifi router) across the area sampled. Naturally, the strength signal will decrease as the device moves away from the router. The limitation of the plot (2D) do not allow to examine the variability on the distribution on the x-axis.
+We analyzed the possibility of certain locations on the map having a higher median signal strength, to assess potential bias (Fig. 4). We note that the orientation angle doesn't not seem to be correlated with signal strength, but position does have an effect on the observed median strength. This is because of the geographical distribution of the access points (wifi router) across the area sampled. Naturally, the strength signal will decrease as the device moves away from the router. The limitation of the plot (2D) do not allow to examine the variability on the distribution on the x-axis.
 
 ```{r summary_by_combo, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Heat map of strength signal grouped by orientation ', out.width="100%", out.height="100%"}
 # Group and summarize the data to obtain median, mean, and standard deviation for signal strength
@@ -406,8 +407,20 @@ heatmap_plot
 
 To explore further the distribution of signal strength in the data, we created several boxplots. We start by grouping them by `mac` and unique position x, and position y combinations. The objective is to analyze if certain location on the area sampled have anomalous signals, and how they compare to other access points. The results are depicted in Figure 5. We note that some of this variability might be explain because of the distances to the access points. This information will become important to further create the indoor positioning model. 
 
+We expect that strength signal is not being greatly influenced by the effect of orientation. On figure 4 we approached this problem including location, and then further explored the idea on figure 5. Because we found some significant differences - most likely because the proximity to the router - we explore the relation between the access point, signal strength and orientation. The resulting box plot is shown in Figure 6. We see that, in general, signal strength does not vary greatly depending on the orientation, with the exception of some outliers. 
+Lastly, we created a heat map of the strength signal by location (Fig 6). Figure 6 serves as a map of proximity to the access points (See Floor plan figure)
 
-```{r heatmap2, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Heat map of strength signal grouped by orientation ', out.width="150%", out.height="150%", warning=FALSE, message =FALSE}
+
+# 4. Results
+
+The resulting exploration allows us to conclude several things:
+
+1) Orientation doesn't seem to heavily influence strength signal
+2) Distance to the device is an important factor of signal strength
+3) Some access points have weaker signals in general - most likely, the ones located at the extremes on the area where the experiment was conducted -. 
+
+
+```{r heatmap2, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Heat map of strength signal grouped by orientation ', out.width="80%", out.height="80%", warning=FALSE, message =FALSE}
 
 #create a loc, coordinates
 library(MASS) 
@@ -420,22 +433,29 @@ new_combIPS = new_combIPS %>% mutate(location = Map(c, posX, posY))
 
 #ggplot(new_combIPS, aes(x = posX, y = signal, group_by=factor(posY))) + geom_boxplot() + facet_grid(mac~grouped_orient)
 
-ggplot(new_combIPS, aes(x = posX, y = signal, group=posY)) + geom_boxplot(width =25, lwd=0.5, outlier.colour = 'black', alpha = 0.4)  + facet_grid(mac~orientation) + theme_bw(base_size=5) + theme(axis.text.x=element_text(angle = 90, hjust = 1, vjust = 1, size = 4)) + scale_x_continuous(n.breaks = 15) +xlab('locations') + ggtitle("Signal strength by location and orientation")
+ggplot(new_combIPS, aes(x = posX, y = signal, group=posY)) + geom_boxplot(width =25, lwd=0.5, outlier.colour = 'skyblue', alpha = 0.4)  + facet_grid(mac~orientation) + theme_bw(base_size=5) + theme(axis.text.x=element_text(angle = 90, hjust = 1, vjust = 1, size = 4)) + scale_x_continuous(n.breaks = 15) +xlab('locations') + ggtitle("Signal strength by location and orientation")
 
 ```
 
 
-```{r or_sigboxplots, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Boxplots for Signal and Orientation grouped by Access Point ', out.width="100%", out.height="100%", warning=FALSE, message =FALSE}
+```{r or_sigboxplots, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Boxplots for Signal and Orientation grouped by Access Point ', out.width="80%", out.height="80%", warning=FALSE, message =FALSE}
 
-ggplot(mod_OffLine, aes(x= orientation, y= signal, group_by= orientation, fill = orientation)) + geom_boxplot(aes(group=orientation), ) + facet_wrap(~mac) + ggtitle("Signal strength by orientation, grouped by access point") + theme(legend.position="none")
+ggplot(mod_OffLine, aes(x= orientation, y= signal, group_by= orientation, fill = orientation)) + geom_boxplot(aes(group=orientation)) + facet_wrap(~mac) + ggtitle("Signal strength by orientation, grouped by access point") + theme(legend.position="none")
 
 ```
+```{r heat_map_floorplan, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Boxplots for Signal and Orientation grouped by Access Point ', out.width="80%", out.height="80%", warning=FALSE, message =FALSE}
 
-# 4. Challenges 
+
+ggplot(mod_OffLine, aes(posX, posY, group= signal)) + geom_point(aes(color = signal, size = 5))  +xlab('Position X') + ylab("Position Y") + ggtitle("Signal strength by location") + theme(legend.position="none")
+
+#ggplot(mod_OffLine, aes(x=posX, y=posY) ) + geom_hex(aes(group=signal)) + theme_bw()
+```
+# 5. Challenges 
 
 This section discusses challenges we encountered exploring the Indoor Positioning data.
 
 ## Data formatting
+
 The data the client provided is not in a format ready for analysis. The data file had multiple characteristics that need significant re-formatting:
 
 * It is a text file with minimal formatting.
@@ -447,6 +467,7 @@ The data the client provided is not in a format ready for analysis. The data fil
 The data formatting process took significant amount of time and required us to learn new functions
 
 ## Data exploration
+
 * There are different counts between MAC addresses and channels. From the txt file, we realized that there are extra access points that are not included in the testing area. 
 
 * We found that there is a one to one relationship between MAC address and channel for the seven devices. We had to delete channel from the 'offline' data set.
