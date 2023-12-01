@@ -29,6 +29,7 @@ More details of the floor plan, and location of online and offline data can be s
 For simplicity, this report will share the results found in the offline dataset, but initial process of data cleaning can be directly applied to the online data as well. The online and offline data sets share the same structure, so we explore the offline data set with the expectation to apply the same method for the online data set.
 
 ```{r fig.align = "center", fig.cap= 'Flooplan location. Access points are squares. Grey dots are offline data locations and black dots are online data locations.'}
+
 knitr::include_graphics("data/floorplan.jpg")
 
 #Ideally the figure should be bigger!
@@ -75,7 +76,9 @@ raw_offline = readLines("Data/offline.final.trace.txt")
 The data are stored in a .txt file separated by both hash symbols and semicolons. A sample of the initial format of the data can be seen below.
 
 ```{r}
-head(raw_offline)
+
+raw_offline[1:3]
+unlist(strsplit(raw_offline[4], "(?<=[;])", perl = TRUE))
 ```
 
 We note a pattern in the internal organization of the data that we use to properly format it.
@@ -163,17 +166,19 @@ names(clean_offline) = c("time", "scanMac", "posX", "posY", "posZ", "orientation
 
 We provide the structure of our data frame, along with the first 3 observations below.
 
-```{r}
+```{r echo = FALSE, message= FALSE}
 clean_offline[1:3,]
 ```
 
-Before further exploring and analyzing the data, we conducted a simple assessment to convert variables into the correct types defined in thedocumentation provided by the client. We performed the following operations:
+Before further exploring and analyzing the data, we conducted a simple assessment to convert variables into the correct types defined in the documentation provided by the client. We performed the following operations:
 
 * We converted the variables `time`, `position`, `orientation`, `signal` and `channel`, to numerical values.
 
 * We then transformed the `time` variable. According documents provided by the client, time is expressed in milliseconds from midnight on January 1st, 1970. We convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. We retained the more precise time information in `rawTime` in case it becomes necessary for future analysis.
 
 * Based on the documents received from the client, a value of 1 for the variable `type` corresponds to ad-hoc devices. However, for the development and testing of the IPS, we will utilize only the signals measured at fixed access points. We removed all rows that have `type = 1`. This operation removed 203,185 observations, resulting in a new data set of 978,443 observations for all access point devices. We then eliminate the `type` variable (now equal to 3 in the entire data set).
+
+*We also removed the `scanMac` column because the documentation provided indicates only one device was used for the experiment.
 
 A sample of the formatted data set can be seen in Table 1.
 
@@ -196,7 +201,11 @@ time_df = clean_offline  %>% mutate(time = time/1000)  %>% mutate(time = as.POSI
 OffLine = time_df[time_df$type == "3", ]
 OffLine = OffLine[, "type" != names(OffLine)]
 
-kbl(head(OffLine), caption = "Data with transformed variables", position="b") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 8)
+#to plot further ahead, feel free to ignore
+dev = OffLine
+OffLine = OffLine[, "scanMac" != names(OffLine)]
+
+kbl(head(OffLine), caption = "Data with transformed variables", position="b") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 6)
 
 ```
 
@@ -205,7 +214,7 @@ kbl(head(OffLine), caption = "Data with transformed variables", position="b") %>
 
 This section focus on the exploration of the data itself. 
 
-```{r}
+```{r echo = FALSE, message= FALSE}
 #check numerical data
 mean_off = OffLine %>% select(posX, posY, posZ, orientation, signal)
 mean_off_p = colMeans(mean_off)
@@ -215,13 +224,14 @@ kbl(mean_off_p, caption = "Numerical variables mean", col.names = "Mean") %>% ka
 ```
 
 
-Table 2 provides a basic exploration of each variable and calculate the mean for the numerical variables (i.e., position, orientation, signal). 
+We conduct a basic exploration of the mean values of the numerical variables (i.e., position, orientation, signal). The results are provided in Table 2.
 
 ## Position
-We find that position-z, has a mean of zero. Further exploration shows that the variable has a value of zero for all the observations in the offline dataset. This seemingly anomalous value is due to the fact that all of the readings were taken on one floor of the building. We removed the posZ variable.
+
+We found that position-z, has a mean of zero. Further exploration shows that the variable has a value of zero for all the observations in the offline data set. This seemingly anomalous value is due to the fact that all of the readings were taken on one floor of the building. We, therefore, removed the posZ variable from the data set.
 
 
-```{r posZ}
+```{r posZ, echo = FALSE, message= FALSE}
 #Let's keep posZ because it is a meaningful pos variable that could be in our model, and we don't know if the online dataset has other values for posZ.
 
 #Check min,max andmean vals for posZ 
@@ -255,15 +265,17 @@ kbl(mean_off_p, caption = "Mean values for numerical variables", col.names = "Me
 kbl(posZdf, caption = "Values for posZ", col.names = c("Mean", "Max", "Min")) %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 ```
 
-```{r}
+```{r echo = FALSE, message= FALSE}
 OffLine = subset(OffLine, select = -posZ)
 ```
 
 
 ## Orientation of hand-held devices
-As provided by the client, the orientation of the hand-held device is supposed to be a set of exactly eight angles from 0 - 315 degrees in increments of 45 degrees. However, in practice, the measured orientations slightly deviate from these eight values. To further examine the distribution of the 'orientation' variable, we will analyze it through an empirical cumulative distribution function (ECDF).
 
-```{r orientation_plot}
+As provided by the client, the orientation of the hand-held device going in increaments of 45 degrees. We plotted 
+supposed to be a set of exactly eight angles from 0 - 315 degrees in increments of 45 degrees. However, in practice, the measured orientations slightly deviate from these eight values. To further examine the distribution of the 'orientation' variable, we will analyze it through an empirical cumulative distribution function (ECDF).
+
+```{r orientation_plot, echo = FALSE, message= FALSE}
 # Plot the orientation of the measurement device
 #plot(ecdf(clean_offline$orientation)) #clean_offline contains the adhoc device as well. Unless you have specific reasons here, I wouldn't display this one, only the plot below that works on OffLine.
 
@@ -280,7 +292,7 @@ plot(ecdf(OffLine$orientation),
 
 From the plot, we observe a concentration of observations around 0, 45, 90 degrees, and so forth. However, there is evident dispersion in between, with instances like 47.5 degrees, 358.2 degrees, and so on. There is also a value of 360, which should be converted to 0. As instructed by the client, we group the orientation values into bins from 0 - 315 in increments of 45.
 
-```{r orientation}
+```{r orientation, echo = FALSE, message= FALSE}
 
 #Develop and apply a function to convert orientation values
 convert_orient <- function(orientation) {
@@ -293,13 +305,15 @@ convert_orient <- function(orientation) {
 OffLine <- OffLine %>% 
  mutate(orientation=convert_orient(orientation))
 
+dev = dev  %>% mutate(orientation=convert_orient(orientation))
+
 ```
 
 ## Access points
 
 The client provided a list of six access point locations. However, the data collected include `r length(unique(OffLine$mac))` access points. This problem arises from the scanning device catching signals from wifi routers on other floors and nearby. We tally the number of observations for each access point and found seven access points with significantly higher number of observations than other access points. 
 
-We confirm the corresponding access points with the data provided by the client on the "Access Point Location" file and filter accordingly. 
+We confirm the corresponding access points with the data provided by the client on the "Access Point Location" file and filter accordingly. Additionally, we add the data of the position values provided by the client to the data set. 
 
 ```{r tally_obs, echo=FALSE, message= FALSE}
 #Tally mac and arrange in descending order
@@ -311,12 +325,7 @@ tally_obs = OffLine %>%
 #create table
 kbl(tally_obs, caption = "Number of observation by MAC address", col.names = c("MAC ID", "Observations"))  %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 
-#Filter out the mac addresses with the bottom five number of observations
-OffLine_7macs <- OffLine %>% filter(!(mac %in% c("00:0f:a3:39:e0:4b",
-                                                 "00:0f:a3:39:e2:10",
-                                                 "00:04:0e:5c:23:fc",
-                                                 "00:30:bd:f8:7f:c5",
-                                                 "00:e0:63:82:8b:a9") ))
+
 
 #Compare obs with values given by client
 mac_locs <- readr::read_table("accessPointLocations.txt", col_names = c("Macs", "posX", "posY"))
@@ -329,27 +338,62 @@ macnames = mac_locs$Macs
 
 #Subset filtered_df by macnames and create a new macIPS dataset
 macIPS = subset(OffLine, mac %in% macnames)
-OffLine = macIPS
 
 #Check macIPS to confirm only 6 mac values remain
-sacheck = OffLine %>% group_by(mac) %>% summarize(observations = n())
-
+sacheck = macIPS %>% group_by(mac) %>% summarize(observations = n())
+# 
+mod_OffLine = macIPS %>% left_join(mac_locs, by = c("mac"="Macs")) %>% rename("mac_posX" = posX.y,
+                                                                               "mac_posY" = posY.y,
+                                                                               "posX" = posX.x,
+                                                                               "posY" = posY.x)
+```
+```{r echo = FALSE, message= FALSE}
+mod_OffLine
 ```
 
 To confirm the list of access points, we match them with the channel's frequency. Since each access point coordinates with only one channel, we do not need the `channel` variable for our model.
 
-```{r}
+
+```{r echo = FALSE, message= FALSE}
 #Find coordinating mac-channel
-OffLine %>% 
+mod_OffLine %>% 
   group_by(mac, channel) %>%
   summarize ()
 
 #Dropping the channel variable in the data set
-OffLine = subset(OffLine, select = -channel)
+mod_OffLine = subset(mod_OffLine, select = -channel)
 
 ```
 
+The heatmap of position x, position y and number of observations is depicted bellow. We observe that the observations are not equally distributed.  We confirm that the locations overlap with the floormap.
+```{r}
+mod_OffLine %>% ggplot(aes(posX, posY)) + geom_bin_2d() + labs(title="Heatmap of Observations by Location", x="x-coordinate", y="y-coordinate") + scale_fill_gradient() + theme_minimal()
+  
+#   geom_count() + labs(title="Location map of access points and handheld devices",x="x-coordinate",y="y-coordinate")
+# 
+# toPlot2
 
+```
+
+```{r fig.align = "center", fig.cap= 'Flooplan location and offline data location. We see the data cleaning was sucessful in eliminating unwanted variables while preserving the geographical information', out.width="50%"}
+
+knitr::include_graphics("floorplan_overlap.jpg")
+
+#Ideally the figure should be bigger!
+```
+
+```{r summary_by_combo}
+# Group and summarize the data to obtain median, mean, and standard deviation for signal strength
+summary_data = mod_OffLine %>%
+  group_by(posX, posY, orientation, mac) %>%
+  summarise(
+    median_signal = median(signal),
+    mean_signal = mean(signal),
+    sd_signal = sd(signal)
+  )
+
+
+```
 
 # 4. Challenges 
 
