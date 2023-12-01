@@ -30,6 +30,8 @@ For simplicity, this report will share the results found in the offline dataset,
 
 ```{r fig.align = "center", fig.cap= 'Flooplan location. Access points are squares. Grey dots are offline data locations and black dots are online data locations.'}
 knitr::include_graphics("data/floorplan.jpg")
+
+#Ideally the figure should be bigger!
 ```
 
 
@@ -48,7 +50,7 @@ According to documents provided by the client, the data contains the following v
 
 * `scanMac`: IP address of the scanning device. 
 
-* `pos`: the 3-D coordination of the scanning device. 
+* `pos`: the 3-D coordination of the scanning device (x,y,z) 
 
 * `orientation`: the scanning device's orientation. 
 
@@ -70,17 +72,15 @@ raw_offline = readLines("Data/offline.final.trace.txt")
 ```
 
 
-Our client stores their data in a .txt file. This sections documents our steps to transfer the text data into a data frame format so that it is ready for further cleaning and analysis. 
-
-The first six rows of the original, raw data is printed below.
+The data are stored in a .txt file separated by both hash symbols and semicolons. A sample of the initial format of the data can be seen below.
 
 ```{r}
 head(raw_offline)
 ```
 
-Below are our observations that shaped our approach for data formatting:
+We note a pattern in the internal organization of the data that we use to properly format it.
 
-* The first three rows, marked by the character #, provides information for the next batch of 110 readings. Similar rows like this re-appear multiple times in the data set.
+* The first three rows, are characterized by the # symbol and mark the limit between each combination of location/orientation (i.e., each location sampling is delimited by 3 hash symbols). 
 
 * The data rows contains a series of variables and values, separated by semicolons. We performed a simple split using semicolon as the separator, and found that some variables, such as `pos` and `mac` are further subdivided. Each `pos` value corresponds to a set of x, y, and z coordination. Each `mac` value corresponds to readings of `signal`, `channel`, and `type` respectively. 
 
@@ -95,38 +95,40 @@ head(toPrint)
 #kbl(toPrint, caption = "Raw Data Format") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 ```
 
-Since our model is supposed to rely on wifi signal strength to predict device location, we need to format our data so that each observation corresponds to one single `signal` value. To transfer the data into a dataframe, we performed the following operations:   
-
-* We start by cleaning the rows with the "#" symbol. A total of 5312 rows are removed, resulting in 146,080 rows.  
+Since the model is supposed to rely on wifi signal strength to predict device location, we format the data so each observation corresponds to one `signal` value. We do this by performing the following operations:
+ 
+* First, we remove the rows with the "#" symbol that mark the beggining of a location sampling/orientation sample. As a result, a total of 5312 rows are removed, resulting in 146,080 rows.  
 
 * Second, we utilize semicolon, colon, and equal sign as separators for the different variables in each row and re-format the data so each row represents an observation of the variable signal strength.  
 
 * Lastly, we bind all rows together to create a dataframe and enter the proper names for each variable.  
+
+A sample of the first 3 rows is depicted below. 
 
 ```{r split_one_line, eval = FALSE}
 
 #Exploration, do not run or eval for the document!
 
 #The code below took all the separation out of one line. We take line 1 as an example and our separators are ; , and =
-separator = strsplit(clean_offline[1], "[; , =]") [[1]]
-separator
-
-#The code below takes the time, id, pos, and degree readings out of "line" and arrange them in a matrix
-aa = separator[c(2,4,6,7,8,10)] %>% 
-  matrix(ncol=6,byrow=TRUE)
-aa
-
-#The code below takes the mac, signal, channel, and device type reading out of "line" and arrange them in a matrix
-bb= separator[-(1:10)] %>%
-  matrix(ncol=4, byrow=TRUE)
-bb
-
-#After this, we can combine the two matrices into a data frame. Our unit of analysis is signal strength, which mean each signal strength value needs to be one single observation. So to combine the data, we need to duplicate `a` by the number of rows in `b`.
-
-aaa = separator[c(2,4,6,7,8,10)] %>% 
-  matrix(ncol=6,nrow=nrow(bb), byrow=TRUE)
-
-cbind(aa,bb) %>% view()
+# separator = strsplit(clean_offline[1], "[;,=]") [[1]]
+# separator
+# 
+# #The code below takes the time, id, pos, and degree readings out of "line" and arrange them in a matrix
+# aa = separator[c(2,4,6,7,8,10)] %>% 
+#   matrix(ncol=6,byrow=TRUE)
+# aa
+# 
+# #The code below takes the mac, signal, channel, and device type reading out of "line" and arrange them in a matrix
+# bb= separator[-(1:10)] %>%
+#   matrix(ncol=4, byrow=TRUE)
+# bb
+# 
+# #After this, we can combine the two matrices into a data frame. Our unit of analysis is signal strength, which mean each signal strength value needs to be one single observation. So to combine the data, we need to duplicate `a` by the number of rows in `b`.
+# 
+# aaa = separator[c(2,4,6,7,8,10)] %>% 
+#   matrix(ncol=6,nrow=nrow(bb), byrow=TRUE)
+# 
+# cbind(aa,bb) %>% view()
 ```
 
 ```{r clean_#_rows, echo = FALSE, comment = ''}
@@ -165,15 +167,12 @@ We provide the structure of our data frame, along with the first 3 observations 
 clean_offline[1:3,]
 ```
 
-Before further exploring and analyzing the data, we conduct a simple assessment to convert variables into the correct useful types and formats. We performed the following operations:
+Before further exploring and analyzing the data, we conduct a simple assessment to convert variables into the correct types. We perform the following operations:
 
 * We observe that some variables, such as `time`, `position`, `orientation`, `signal` and `channel`, should be converted to numerical for analysis.  
 
-* We now focus on the `time` variable. According documents provided by the client, time is expressed in milliseconds from midnight on January 1st, 1970. We convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. Additionally, we retain the more precise time information in 'rawTime' in case it becomes necessary for future analysis.
+* We now focus on the `time` variable. According documents provided by the client, time is expressed in milliseconds from midnight on January 1st, 1970. We convert this time value to seconds and then designate the class of the time element to visualize the values as date-times in R. Additionally, we retain the more precise time information in `rawTime` in case it becomes necessary for future analysis.
 
-* Based on the documents received from the client, a value of 1 for the variable `type` corresponds to ad-hoc devices. However, for the development and testing of the IPS, we will utilize only the signals measured at fixed access points. We removed all rows that have `type` = 1. This operation removes `r length(clean_offline) - length(OffLine)` observations, resulting in `r length(OffLine)` observations for all accesspoint devices. Now, since the variable `type` has a value of 3 for all observations, so we eliminate the variable `type` from the data set.
-
-Table 1 provides our formatted offline dataset.
 
 ```{r formatting_df, echo = FALSE}
 #Turn some variables into numeric
@@ -191,7 +190,13 @@ OffLine = OffLine[, "type" != names(OffLine)]
 
 kbl(head(clean_offline), caption = "Clean Data with transformed variables", position="b") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 5)
 
+
 ```
+
+* Based on the documents received from the client, a value of 1 for the variable `type` corresponds to ad-hoc devices. However, for the development and testing of the IPS, we will utilize only the signals measured at fixed access points. We removed all rows that have `type = 1`. This operation removes `length(clean_offline$time) - length(OffLine$time)` observations, resulting in `length(OffLine$time)` observations for all access point devices. Now, since the variable `type` has a value of 3 for all observations, so we eliminate the variable `type` from the data set.
+
+Table 1 provides our formatted offline dataset.
+
 
 # 3 Data exploration
 In this section, we explore the data and prepare it to be ready for model input.
@@ -243,9 +248,9 @@ axis(2, cex.axis = 0.8)
 ```{r table, echo=FALSE}
 
 
-kbl(mean_off_p, caption = "Mean values for numerical variables") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
+kbl(mean_off_p, caption = "Mean values for numerical variables", col.names = "Mean") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 
-kbl(posZdf, caption = "Min, Max and Mean values for posZ") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
+kbl(posZdf, caption = "Values for posZ", col.names = c("Mean", "Max", "Min")) %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 ```
 
 ```{r}
@@ -290,14 +295,19 @@ OffLine <- OffLine %>%
 
 ## Access points
 
-The client provided a list of six access point locations. However, the data collected include `r length(unique(OffLine$mac))` access points. This problem arises from the scanning device catching signals from wifi routers on other floors and nearby. We tally the number of observations for each access point and found seven access points with significantly higher number of observations than other access points. From the information provided, we do not know why there is one extra access point, so we keep the top seven for now.
+The client provided a list of six access point locations. However, the data collected include `r length(unique(OffLine$mac))` access points. This problem arises from the scanning device catching signals from wifi routers on other floors and nearby. We tally the number of observations for each access point and found seven access points with significantly higher number of observations than other access points. 
 
-```{r}
+We confirm the corresponding access points with the data provided by the client on the "Access Point Location" file and filter accordingly. 
+
+```{r tally_obs, echo=FALSE, message= FALSE}
 #Tally mac and arrange in descending order
-OffLine %>% 
+tally_obs = OffLine %>% 
   group_by(mac) %>%
   summarize(observations =n()) %>%
   arrange(desc(observations))
+
+#create table
+kbl(tally_obs, caption = "Number of observation by MAC address", col.names = c("MAC ID", "Observations"))  %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
 
 #Filter out the mac addresses with the bottom five number of observations
 OffLine_7macs <- OffLine %>% filter(!(mac %in% c("00:0f:a3:39:e0:4b",
@@ -306,20 +316,37 @@ OffLine_7macs <- OffLine %>% filter(!(mac %in% c("00:0f:a3:39:e0:4b",
                                                  "00:30:bd:f8:7f:c5",
                                                  "00:e0:63:82:8b:a9") ))
 
+#Compare obs with values given by client
+mac_locs <- readr::read_table("accessPointLocations.txt", col_names = c("Macs", "posX", "posY"))
+mac_locs = as.data.frame(mac_locs)
+
+kbl(mac_locs$Macs, caption ="MAC addresses provided by client", col.names = "MAC ID") %>% kable_classic(full_width = F, html_font = "Cambria", font_size = 10)
+
+#Extract the Macs name from mac_locs
+macnames = mac_locs$Macs
+
+#Subset filtered_df by macnames and create a new macIPS dataset
+macIPS = subset(OffLine, mac %in% macnames)
+OffLine = macIPS
+
+#Check macIPS to confirm only 6 mac values remain
+sacheck = OffLine %>% group_by(mac) %>% summarize(observations = n())
+
 ```
 
 To confirm the list of access points, we match them with the channel's frequency. Since each access point coordinates with only one channel, we do not need the `channel` variable for our model.
 
 ```{r}
 #Find coordinating mac-channel
-OffLine_7macs %>% 
+OffLine %>% 
   group_by(mac, channel) %>%
   summarize ()
 
 #Dropping the channel variable in the data set
-OffLine_7macs = subset(OffLine_7macs, select = -channel)
+OffLine = subset(OffLine, select = -channel)
 
 ```
+
 
 
 # 4. Challenges 
