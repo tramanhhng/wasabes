@@ -1,0 +1,19 @@
+---
+title: "Indoor Positioning System"
+author: "STAT 4/510 Wasabees Group"
+date: "2023-12-02"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data exploration
+
+
+# Model development
+
+
+# Model testing
+
