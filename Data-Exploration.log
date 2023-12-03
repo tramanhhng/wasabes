@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.11.26)  3 DEC 2023 05:56
+=======
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.6)  1 DEC 2023 23:15
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 =======
 This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.6)  1 DEC 2023 23:15
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
@@ -8,6 +12,7 @@ entering extended mode
  %&-line parsing enabled.
 **Data-Exploration.tex
 (./Data-Exploration.tex
+<<<<<<< HEAD
 <<<<<<< HEAD
 LaTeX2e <2023-11-01>
 L3 programming layer <2023-11-09>
@@ -52,6 +57,8 @@ LaTeX Info: Redefining \colon on input line 410.
 \classnum@=\count197
 \DOTSCASE@=\count198
 =======
+=======
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 LaTeX2e <2022-11-01> patch level 1
 L3 programming layer <2022-11-02> (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2022/07/02 v1.4n Standard LaTeX document class
@@ -93,6 +100,9 @@ LaTeX Info: Redefining \overline on input line 399.
 LaTeX Info: Redefining \colon on input line 410.
 \classnum@=\count196
 \DOTSCASE@=\count197
+<<<<<<< HEAD
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
+=======
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 LaTeX Info: Redefining \ldots on input line 496.
 LaTeX Info: Redefining \dots on input line 499.
@@ -107,7 +117,11 @@ LaTeX Info: Redefining \Bigg on input line 725.
 LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
 <<<<<<< HEAD
+<<<<<<< HEAD
 \macc@depth=\count199
+=======
+\macc@depth=\count198
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 =======
 \macc@depth=\count198
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
@@ -116,6 +130,7 @@ LaTeX Info: Redefining \pmod on input line 910.
 LaTeX Info: Redefining \smash on input line 940.
 LaTeX Info: Redefining \relbar on input line 970.
 LaTeX Info: Redefining \Relbar on input line 971.
+<<<<<<< HEAD
 <<<<<<< HEAD
 \c@MaxMatrixCols=\count266
 \dotsspace@=\muskip16
@@ -127,6 +142,8 @@ LaTeX Info: Redefining \Relbar on input line 971.
 \maxfields@=\count271
 \andhelp@=\toks19
 =======
+=======
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 \c@MaxMatrixCols=\count199
 \dotsspace@=\muskip16
 \c@parentequation=\count266
@@ -136,6 +153,9 @@ LaTeX Info: Redefining \Relbar on input line 971.
 \column@=\count269
 \maxfields@=\count270
 \andhelp@=\toks18
+<<<<<<< HEAD
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
+=======
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 \eqnshift@=\dimen144
 \alignsep@=\dimen145
@@ -143,6 +163,7 @@ LaTeX Info: Redefining \Relbar on input line 971.
 \tagwidth@=\dimen147
 \totwidth@=\dimen148
 \lineht@=\dimen149
+<<<<<<< HEAD
 <<<<<<< HEAD
 \@envbody=\toks20
 \multlinegap=\skip51
@@ -154,6 +175,8 @@ LaTeX Info: Redefining \] on input line 2954.
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
 (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty
 =======
+=======
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 \@envbody=\toks19
 \multlinegap=\skip51
 \multlinetaggap=\skip52
@@ -163,6 +186,9 @@ LaTeX Info: Redefining \] on input line 2954.
 ) (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
 (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+<<<<<<< HEAD
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
+=======
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
@@ -170,6 +196,7 @@ Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+<<<<<<< HEAD
 <<<<<<< HEAD
 )) (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
 Package: iftex 2022/02/03 v1.0f TeX engine tests
@@ -182,6 +209,9 @@ Package: inputenc 2021/02/14 v1.3d Input encoding file
 ) (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/textcomp.sty
 Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
 ) (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/lmodern.sty
+=======
+)) (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/lm/lmodern.sty
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 =======
 )) (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/lm/lmodern.sty
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
@@ -219,6 +249,7 @@ LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 (Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
 <<<<<<< HEAD
+<<<<<<< HEAD
 ) (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty
 Package: xcolor 2023/11/15 v3.01 LaTeX color extensions (UK)
 (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg
@@ -249,6 +280,8 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@cntv=\count273
 \c@Gm@tempcnt=\count274
 =======
+=======
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 ) (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
 Package: iftex 2022/02/03 v1.0f TeX engine tests
 ) (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty
@@ -291,6 +324,9 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@cnth=\count271
 \Gm@cntv=\count272
 \c@Gm@tempcnt=\count273
+<<<<<<< HEAD
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
+=======
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 \Gm@bindingoffset=\dimen150
 \Gm@wd@mp=\dimen151
@@ -301,6 +337,7 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@layouthoffset=\dimen156
 \Gm@layoutvoffset=\dimen157
 <<<<<<< HEAD
+<<<<<<< HEAD
 \Gm@dimlist=\toks25
 ) (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
@@ -310,6 +347,8 @@ Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
 Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
 ) (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
 =======
+=======
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 \Gm@dimlist=\toks24
 ) (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
@@ -318,6 +357,9 @@ Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
 (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
 ) (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+<<<<<<< HEAD
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
+=======
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
@@ -326,7 +368,11 @@ Package graphics Info: Driver file: pdftex.def on input line 107.
 \Gin@req@height=\dimen158
 \Gin@req@width=\dimen159
 <<<<<<< HEAD
+<<<<<<< HEAD
 ) (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty
+=======
+) (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 =======
 ) (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
@@ -342,6 +388,7 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \cmidrulekern=\dimen168
 \defaultaddspace=\dimen169
 <<<<<<< HEAD
+<<<<<<< HEAD
 \@cmidla=\count275
 \@cmidlb=\count276
 \@aboverulesep=\dimen170
@@ -352,6 +399,8 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 ) (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/longtable.sty
 Package: longtable 2023-11-01 v4.19 Multi-page Table package (DPC)
 =======
+=======
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 \@cmidla=\count274
 \@cmidlb=\count275
 \@aboverulesep=\dimen170
@@ -361,13 +410,20 @@ Package: longtable 2023-11-01 v4.19 Multi-page Table package (DPC)
 \@thisrulewidth=\dimen172
 ) (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/tools/longtable.sty
 Package: longtable 2021-09-01 v4.17 Multi-page Table package (DPC)
+<<<<<<< HEAD
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
+=======
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 \LTleft=\skip53
 \LTright=\skip54
 \LTpre=\skip55
 \LTpost=\skip56
 <<<<<<< HEAD
+<<<<<<< HEAD
 \LTchunksize=\count279
+=======
+\LTchunksize=\count278
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 =======
 \LTchunksize=\count278
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
@@ -377,6 +433,7 @@ Package: longtable 2021-09-01 v4.17 Multi-page Table package (DPC)
 \LT@foot=\box55
 \LT@lastfoot=\box56
 \LT@gbox=\box57
+<<<<<<< HEAD
 <<<<<<< HEAD
 \LT@cols=\count280
 \LT@rows=\count281
@@ -441,6 +498,8 @@ Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 \tabu@alloc=\count293
 \tabu@nested=\count294
 =======
+=======
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 \LT@cols=\count279
 \LT@rows=\count280
 \c@LT@tables=\count281
@@ -503,6 +562,9 @@ Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 \tabu@Xcol=\count291
 \tabu@alloc=\count292
 \tabu@nested=\count293
+<<<<<<< HEAD
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
+=======
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 \tabu@target=\dimen181
 \tabu@spreadtarget=\dimen182
@@ -514,8 +576,13 @@ Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 \belowtabulinesep=\dimen188
 \tabustrutrule=\dimen189
 <<<<<<< HEAD
+<<<<<<< HEAD
 \tabu@thebody=\toks32
 \tabu@footnotes=\toks33
+=======
+\tabu@thebody=\toks31
+\tabu@footnotes=\toks32
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 =======
 \tabu@thebody=\toks31
 \tabu@footnotes=\toks32
@@ -525,6 +592,7 @@ Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 \tabu@hleads=\box66
 \tabu@vleads=\box67
 \tabu@cellskip=\skip62
+<<<<<<< HEAD
 <<<<<<< HEAD
 ) (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/threeparttable/threeparttable.sty
 Package: threeparttable 2003/06/13  v 3.0
@@ -545,6 +613,8 @@ Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 \UL@height=\dimen190
 \UL@pe=\count295
 =======
+=======
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 ) (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/threeparttable/threeparttable.sty
 Package: threeparttable 2003/06/13  v 3.0
 \@tempboxb=\box68
@@ -563,11 +633,15 @@ Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 \UL@hook=\toks33
 \UL@height=\dimen190
 \UL@pe=\count294
+<<<<<<< HEAD
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
+=======
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 \UL@pixel=\dimen191
 \ULC@box=\box71
 Package: ulem 2019/11/18
 \ULdepth=\dimen192
+<<<<<<< HEAD
 <<<<<<< HEAD
 ) (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/makecell/makecell.sty
 Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
@@ -678,6 +752,8 @@ with kernel methods
 Package: rerunfilecheck 2022-07-10 v1.10 Rerun checks for auxiliary files (HO)
 (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
 =======
+=======
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 ) (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/makecell/makecell.sty
 Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
 \rotheadsize=\dimen193
@@ -786,12 +862,16 @@ with kernel methods
 (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
 Package: rerunfilecheck 2022-07-10 v1.10 Rerun checks for auxiliary files (HO)
 (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
+<<<<<<< HEAD
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
+=======
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 )
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 285.
 )
 \Hy@SectionHShift=\skip65
+<<<<<<< HEAD
 <<<<<<< HEAD
 )
 LaTeX Font Info:    Trying to load font information for T1+lmr on input line 87.
@@ -805,6 +885,8 @@ File: l3backend-pdftex.def 2023-11-09 L3 backend support: PDF output (pdfTeX)
 
 LaTeX Warning: Label `tab:formatting_df' multiply defined.
 =======
+=======
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 ) (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2022-10-26 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count307
@@ -812,6 +894,9 @@ File: l3backend-pdftex.def 2022-10-26 L3 backend support: PDF output (pdfTeX)
 ) (./Data-Exploration.aux
 
 LaTeX Warning: Label `tab:table' multiply defined.
+<<<<<<< HEAD
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
+=======
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 
 
@@ -820,6 +905,7 @@ LaTeX Warning: Label `tab:tally_obs' multiply defined.
 )
 \openout1 = `Data-Exploration.aux'.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 87.
 LaTeX Font Info:    ... okay on input line 87.
@@ -844,6 +930,8 @@ Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
 (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 =======
+=======
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 84.
 LaTeX Font Info:    ... okay on input line 84.
 LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 84.
@@ -866,6 +954,9 @@ LaTeX Font Info:    ... okay on input line 84.
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
 (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+<<<<<<< HEAD
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
+=======
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
@@ -904,7 +995,11 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Package hyperref Info: Link coloring OFF on input line 87.
+=======
+Package hyperref Info: Link coloring OFF on input line 84.
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 =======
 Package hyperref Info: Link coloring OFF on input line 84.
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
@@ -912,6 +1007,7 @@ Package hyperref Info: Link coloring OFF on input line 84.
 \@outlinefile=\write3
 \openout3 = `Data-Exploration.out'.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 89.
 (c:/Users/Pascal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
@@ -1018,6 +1114,8 @@ LaTeX2e <2023-11-01>
 L3 programming layer <2023-11-09>
  ***********
 =======
+=======
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 86.
 (/Users/tramanh/Library/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
@@ -1108,11 +1206,15 @@ File: Data-Exploration_files/figure-latex/heat_map_floorplan-1.pdf Graphic file 
 Package pdftex.def Info: Data-Exploration_files/figure-latex/heat_map_floorplan-1.pdf  used on input line 643.
 (pdftex.def)             Requested size: 375.82738pt x 256.02214pt.
 [9 <./Data-Exploration_files/figure-latex/heatmap2-1.pdf>] [10 <./Data-Exploration_files/figure-latex/or_sigboxplots-1.pdf> <./Data-Exploration_files/figure-latex/heat_map_floorplan-1.pdf>] [11] (./Data-Exploration.aux)
+<<<<<<< HEAD
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
+=======
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `Data-Exploration.out' has not changed.
+<<<<<<< HEAD
 <<<<<<< HEAD
 (rerunfilecheck)             Checksum: FB7AC48FB044F7DEF22D7FBB3C8E6ABD;2609.
  ) 
@@ -1132,6 +1234,8 @@ PDF statistics:
  73 named destinations out of 1000 (max. 500000)
  158 words of extra memory for PDF output out of 10000 (max. 10000000)
 =======
+=======
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 (rerunfilecheck)             Checksum: 8AE61A09008E477DCA3DEA66BA344DD3;1887.
  ) 
 Here is how much of TeX's memory you used:
@@ -1149,5 +1253,8 @@ PDF statistics:
  197 compressed objects within 2 object streams
  59 named destinations out of 1000 (max. 500000)
  145 words of extra memory for PDF output out of 10000 (max. 10000000)
+<<<<<<< HEAD
+>>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
+=======
 >>>>>>> e3a4d62262b34a84fffb0afe05c41406ae72ec84
 
