@@ -400,7 +400,6 @@ This section discusses challenges we encountered exploring the Indoor Positionin
 
 ## 6.1 Data formatting
 
-
 The data the client provided is not in a format ready for analysis. The data file had multiple characteristics that need significant re-formatting:
 
 1) It is a text file with minimal formatting.
@@ -420,6 +419,6 @@ These challenges were solved by learning about the `string` function.
 2) We found that there is a one to one relationship between MAC address and channel for the seven devices. We had to delete channel from the 'offline' data set.
 
 
-# 6.3 Lack of knowledge on the subject
+## 6.3 Lack of knowledge on the subject
 
 None of the members of the team are experts or at least knowledgeable in IPS, so substantial learning had to be done to understand the data itself.
