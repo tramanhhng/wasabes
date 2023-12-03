@@ -319,7 +319,7 @@ knitr::include_graphics("floorplan_overlap.jpg")
 
 We analyzed the possibility of a stronger median signal for certain access points on the map depending on the orientation of the device (Fig 6). We note that some access points, particularly `00:14:bf:b1:97:90` has a stronger median signal, while the lowest corresponds to `00:14:bf:b1:97:8d`. This might be because of the location of access point; some will be closer to the sampling locations, while others on the extreme will be further away. Naturally, the strength signal will decrease as the device moves away from the router. What's interesting to notice is that orientation does seem to be influence to signal strength, at least in the 50 percentile behavior.
 
-```{r summary_by_combo_fig6, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Heat map of strength signal grouped by orientation ', out.width="150%", out.height="120%"}
+```{r summary_by_combo_fig6, echo=FALSE, message =FALSE, fig.align = "center", fig.cap= 'Heat map of strength signal grouped by orientation ', out.width="100%", out.height="100%"}
 #fig6
 # Group and summarize the data to obtain median, mean, and standard deviation for signal strength
 summary_data = mod_OffLine %>%
